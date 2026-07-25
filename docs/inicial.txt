@@ -1,0 +1,19 @@
+Es un caso de uso clásico para un sistema de cobranza desacoplado con un agente de IA. Dado que la estructura del Excel varía y el agente consumirá la API para tomar decisiones en tiempo real, la clave está en separar la estructura crítica de búsqueda del resto de metadatos dinámicos.Aquí tienes el análisis arquitectónico y la propuesta técnica paso a paso para Laravel:1. Estrategia de Base de Datos DinámicaNo conviene crear tablas físicas dinámicas en SQL cada vez que cambie el Excel (eso rompería migraciones y complicaría la API). El enfoque recomendado es una arquitectura híbrida (Relacional + JSON):Esquema recomendado: debtors (o clients)Campos Fijos (Indexados):id (UUID / BIGINT)identification (Cédula/DNI — índice único o por lote)full_name (Nombre principal — índice para búsqueda rápida)total_debt (Deuda total inicial)current_balance (Saldo pendiente actual)status (pending, in_negotiation, paid, unreachable)batch_id (Para identificar a qué carga de Excel pertenece)Campo Dinámico (JSONB / JSON):extra_data (JSON): Guarda aquí cualquier columna adicional que venga en el Excel (fecha de nacimiento, fecha de ingreso, dirección, referencias, canal preferido, etc.).Ventaja: El agente de IA puede consultar siempre por identification o status a máxima velocidad, y al mismo tiempo leer todo el objeto extra_data para armar el contexto de la llamada o mensaje.2. Ingesta y Procesamiento del ExcelPara asegurar que el sistema escale sin importar si el Excel tiene 100 o 50,000 filas:Librería: Usa spatie/simple-excel (muy eficiente en memoria) o maatwebsite/excel.Procesamiento Asíncrono:Subir el archivo vía POST /api/v1/imports.Guardar el archivo en storage temporal y despachar un Job en Cola (ProcessExcelImportJob).Procesar en bloques (Chunking de 500 a 1,000 registros).Mapeo Inteligente de Columnas:Extraer la primera fila (encabezados).Normalizar las llaves (ej: "Fecha de Nacimiento" $\rightarrow$ fecha_nacimiento).Asignar los campos clave a las columnas fijas y empujar todo el resto dentro de extra_data.3. Diseño de APIs para el Agente AIEl agente necesita endpoints limpios, predictivos y optimizados para Function Calling o Tool Use:Endpoints ClaveMétodoEndpointPropósito para el Agente AIGET/api/v1/debtors/search?q={query}Busca deudores por cédula, teléfono o nombre.GET/api/v1/debtors/{id}Trae el perfil completo (fijos + extra_data) para armar el prompt del agente.POST/api/v1/debtors/{id}/paymentsRegistra un abono/promesa de pago reportado por el cliente en la llamada/chat.PATCH/api/v1/debtors/{id}/statusActualiza el estado de la gestión (acuerdo_pago, ilocalizable, negativa).POST/api/v1/debtors/{id}/interactionsGuarda la bitácora/transcripción del resumen de la llamada realizada por la IA.4. Estructura de Respuesta JSON (Optimizada para LLMs)Los modelos de lenguaje consumen menos tokens y razonan mejor con JSONs planos y expresivos.JSON{
+  "id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
+  "identification": "1090123456",
+  "full_name": "Carlos Pérez",
+  "financials": {
+    "total_debt": 1500000.00,
+    "current_balance": 1200000.00,
+    "last_payment": 300000.00,
+    "currency": "COP"
+  },
+  "status": "in_negotiation",
+  "custom_details": {
+    "fecha_nacimiento": "1985-05-12",
+    "fecha_ingreso": "2021-01-15",
+    "dias_mora": 45,
+    "empresa": "Tecnología S.A.S."
+  }
+}
+5. Auditoría y TrazabilidadCrea una tabla interaction_logs ligada al deudor. Cada vez que la IA interactúe con un cliente, el backend debe registrar:debtor_idchannel (WhatsApp, Voz, Email)outcome (Promesa de pago, Rechazo, Buzón de voz)summary (Resumen generado por la IA)metadata (Duración de llamada, ID de sesión externa)
