@@ -9,21 +9,22 @@ use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class NotificationEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $messageBody;
+    public $invoiceData;
     public $subjectString;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($subjectString, $messageBody)
+    public function __construct($subjectString, $invoiceData)
     {
         $this->subjectString = $subjectString;
-        $this->messageBody = $messageBody;
+        $this->invoiceData = $invoiceData;
     }
 
     /**
@@ -44,7 +45,7 @@ class NotificationEmail extends Mailable
         return new Content(
             markdown: 'emails.notification',
             with: [
-                'messageBody' => $this->messageBody,
+                'invoiceData' => $this->invoiceData,
             ]
         );
     }
@@ -56,6 +57,11 @@ class NotificationEmail extends Mailable
      */
     public function attachments(): array
     {
-        return [];
+        $pdf = Pdf::loadView('pdf.invoice', $this->invoiceData);
+        
+        return [
+            Attachment::fromData(fn () => $pdf->output(), 'Estado_de_Cuenta.pdf')
+                    ->withMime('application/pdf'),
+        ];
     }
 }

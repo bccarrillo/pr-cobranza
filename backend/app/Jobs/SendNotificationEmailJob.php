@@ -12,17 +12,17 @@ class SendNotificationEmailJob implements ShouldQueue
     use Queueable;
 
     public $email;
-    public $subjectString;
-    public $messageBody;
+    public $subject;
+    public $invoiceData;
 
     /**
      * Create a new job instance.
      */
-    public function __construct($email, $subjectString, $messageBody)
+    public function __construct($email, $subject, $invoiceData)
     {
         $this->email = $email;
-        $this->subjectString = $subjectString;
-        $this->messageBody = $messageBody;
+        $this->subject = $subject;
+        $this->invoiceData = $invoiceData;
     }
 
     /**
@@ -30,6 +30,6 @@ class SendNotificationEmailJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to($this->email)->send(new NotificationEmail($this->subjectString, $this->messageBody));
+        Mail::to($this->email)->send(new NotificationEmail($this->subject, $this->invoiceData));
     }
 }
