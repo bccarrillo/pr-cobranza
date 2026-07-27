@@ -85,23 +85,30 @@ sudo chmod -R 775 /var/www/pr-cobranza/backend/storage
 sudo chmod -R 775 /var/www/pr-cobranza/backend/bootstrap/cache
 ```
 
-## 4. Configuración de Nginx
+## 4. Configuración de Nginx (Subdominio Seguro)
 
-Crear el Virtual Host para Nginx:
+Crear el Virtual Host para Nginx apuntando al subdominio y habilitando HTTPS (previamente configurado con Certbot/SSL):
+
 ```bash
-sudo tee /etc/nginx/sites-available/pr-cobranza > /dev/null << 'EOF'
+sudo tee /etc/nginx/sites-available/pr-cobranza.nation-ai.tech > /dev/null << 'EOF'
 server {
-    listen 8005;
-    listen [::]:8005;
-    server_name _;
-    root /var/www/pr-cobranza/backend/public;
+    listen 80;
+    listen [::]:80;
+    server_name pr-cobranza.nation-ai.tech;
+    return 301 https://$host$request_uri;
+}
 
-    add_header X-Frame-Options "SAMEORIGIN";
-    add_header X-Content-Type-Options "nosniff";
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name pr-cobranza.nation-ai.tech;
 
-    index index.php;
-
+    root /var/www/nation-ai.tech/public_html/pr-cobranza/backend/public;
+    index index.php index.html index.htm;
     charset utf-8;
+
+    ssl_certificate /etc/letsencrypt/live/pr-cobranza.nation-ai.tech/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/pr-cobranza.nation-ai.tech/privkey.pem;
 
     location / {
         try_files $uri $uri/ /index.php?$query_string;
@@ -109,8 +116,6 @@ server {
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location = /robots.txt  { access_log off; log_not_found off; }
-
-    error_page 404 /index.php;
 
     location ~ \.php$ {
         fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
@@ -125,10 +130,13 @@ server {
 EOF
 ```
 
+*Nota: La ruta base de la API ha cambiado a `https://pr-cobranza.nation-ai.tech/api/v1/`.*
+
 Activar y reiniciar Nginx:
 ```bash
-sudo ln -s /etc/nginx/sites-available/pr-cobranza /etc/nginx/sites-enabled/
-sudo systemctl restart nginx
+sudo ln -s /etc/nginx/sites-available/pr-cobranza.nation-ai.tech /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
 ```
 
 ## 5. Configuración de Tareas en Segundo Plano (Supervisor)
@@ -139,7 +147,7 @@ Para procesar correos e importaciones de Excel automáticamente 24/7, configurar
 sudo tee /etc/supervisor/conf.d/pr-cobranza-worker.conf > /dev/null << 'EOF'
 [program:pr-cobranza-worker]
 process_name=%(program_name)s_%(process_num)02d
-command=php /var/www/pr-cobranza/backend/artisan queue:work --sleep=3 --tries=3 --max-time=3600
+command=php /var/www/nation-ai.tech/public_html/pr-cobranza/backend/artisan queue:work --sleep=3 --tries=3 --max-time=3600
 autostart=true
 autorestart=true
 stopasgroup=true
@@ -147,7 +155,7 @@ killasgroup=true
 user=www-data
 numprocs=1
 redirect_stderr=true
-stdout_logfile=/var/www/pr-cobranza/backend/storage/logs/worker.log
+stdout_logfile=/var/www/nation-ai.tech/public_html/pr-cobranza/backend/storage/logs/worker.log
 stopwaitsecs=3600
 EOF
 ```
