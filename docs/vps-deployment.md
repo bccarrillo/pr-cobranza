@@ -171,6 +171,17 @@ sudo supervisorctl start pr-cobranza-worker:*
 
 Abrir el puerto configurado en Nginx para permitir tráfico web:
 ```bash
-sudo ufw allow 8005/tcp
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
 sudo ufw reload
 ```
+
+## 7. Monitoreo de la Cola de Trabajo (Worker Log)
+
+Para ver en tiempo real cómo se procesan los correos y otras tareas en segundo plano (el workload), puedes revisar el archivo de logs de Supervisor:
+
+```bash
+tail -f /var/www/nation-ai.tech/public_html/pr-cobranza/backend/storage/logs/worker.log
+```
+
+*(Si el archivo no existe o Supervisor da error `ENOENT`, debes crear la carpeta `logs` y el archivo manualmente con `mkdir -p` y `touch`, y luego asignarle permisos a `www-data`).*
