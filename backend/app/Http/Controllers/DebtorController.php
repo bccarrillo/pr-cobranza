@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Debtor;
+use App\Jobs\SendNotificationEmailJob;
 
 class DebtorController extends Controller
 {
@@ -73,8 +74,22 @@ class DebtorController extends Controller
             'status' => $newBalance == 0 ? 'paid' : 'in_negotiation'
         ]);
         
+        $email = $debtor->extra_data['email'] ?? null;
+
+        if ($email) {
+            $invoiceData = [
+                'debtor_name' => $debtor->full_name,
+                'amount' => $request->amount,
+                'invoice_number' => 'ABONO-' . time(),
+                'date' => $request->date ?? now()->format('Y-m-d'),
+                'message' => "Hemos procesado tu abono de $" . number_format($request->amount, 2) . " exitosamente. Tu saldo pendiente actualizado es de $" . number_format($newBalance, 2),
+            ];
+            
+            SendNotificationEmailJob::dispatch($email, 'Confirmación de Abono - PR Cobranza', $invoiceData);
+        }
+        
         return response()->json([
-            'message' => 'Payment registered successfully', 
+            'message' => 'Payment registered successfully and email queued (if available)', 
             'current_balance' => $debtor->current_balance
         ]);
     }
