@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { LayoutDashboard, Users, Settings, LogOut, Building2, UserCircle, UploadCloud } from 'lucide-react';
+import { LayoutDashboard, Users, Settings, LogOut, Building2, UserCircle, UploadCloud, Bot } from 'lucide-react';
 
 const Layout = () => {
   return (
@@ -69,6 +69,20 @@ const Layout = () => {
           >
             <Users size={20} />
             <span>Deudores</span>
+          </NavLink>
+
+          <NavLink
+            to="/ai-integration"
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium mt-4 border border-dashed border-slate-200 ${
+                isActive
+                  ? 'bg-light-purple-soft/50 text-light-purple border-light-purple/30 shadow-sm'
+                  : 'text-slate-500 hover:bg-slate-50 hover:text-light-purple'
+              }`
+            }
+          >
+            <Bot size={20} />
+            <span>Integración IA</span>
           </NavLink>
         </nav>
 

@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Debtors from './pages/Debtors';
 import Tenants from './pages/Tenants';
 import Users from './pages/Users';
+import AIIntegration from './pages/AIIntegration';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="debtors" element={<Debtors />} />
           <Route path="tenants" element={<Tenants />} />
           <Route path="users" element={<Users />} />
+          <Route path="ai-integration" element={<AIIntegration />} />
         </Route>
       </Routes>
     </BrowserRouter>
