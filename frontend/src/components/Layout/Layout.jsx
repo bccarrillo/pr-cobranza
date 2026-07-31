@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { LayoutDashboard, Users, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, Settings, LogOut, Building2, UserCircle, UploadCloud } from 'lucide-react';
 
 const Layout = () => {
   return (
@@ -27,6 +27,34 @@ const Layout = () => {
           >
             <LayoutDashboard size={20} />
             <span>Dashboard</span>
+          </NavLink>
+
+          <NavLink
+            to="/tenants"
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
+                isActive
+                  ? 'bg-light-blue-soft text-light-blue shadow-sm'
+                  : 'text-light-text-secondary hover:bg-slate-100 hover:text-light-text-primary'
+              }`
+            }
+          >
+            <Building2 size={20} />
+            <span>Empresas</span>
+          </NavLink>
+
+          <NavLink
+            to="/users"
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
+                isActive
+                  ? 'bg-light-blue-soft text-light-blue shadow-sm'
+                  : 'text-light-text-secondary hover:bg-slate-100 hover:text-light-text-primary'
+              }`
+            }
+          >
+            <UserCircle size={20} />
+            <span>Usuarios</span>
           </NavLink>
 
           <NavLink

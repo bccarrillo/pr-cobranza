@@ -33,7 +33,8 @@ class ProcessExcelImportJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $absolutePath = Storage::disk('local')->path($this->filePath);
+        $rawPath = Storage::disk('local')->path($this->filePath);
+        $absolutePath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $rawPath);
         
         if (!file_exists($absolutePath)) {
             Log::error("Excel file not found at: {$absolutePath}");
@@ -41,8 +42,18 @@ class ProcessExcelImportJob implements ShouldQueue
         }
 
         try {
-            SimpleExcelReader::create($absolutePath)
-                ->getRows()
+            $reader = SimpleExcelReader::create($absolutePath);
+            
+            // Verificamos si se puede leer. Si es un .xlsx pero por dentro es un CSV (texto plano),
+            // ZipArchive lanzará una excepción. La atrapamos y forzamos lectura como CSV.
+            try {
+                $reader->getHeaders();
+            } catch (\Exception $e) {
+                Log::warning("Fallo al leer como formato original, intentando forzar como CSV. Error: " . $e->getMessage());
+                $reader = SimpleExcelReader::create($absolutePath, 'csv');
+            }
+
+            $reader->getRows()
                 ->chunk(500)
                 ->each(function ($rows) {
                     $debtorsData = [];
@@ -52,7 +63,7 @@ class ProcessExcelImportJob implements ShouldQueue
                         $totalDebt = $row['total_debt'] ?? $row['Deuda'] ?? $row['deuda'] ?? 0;
                         $phone = $row['phone'] ?? $row['Teléfono'] ?? $row['telefono'] ?? null;
                         $email = $row['email'] ?? $row['Email'] ?? $row['correo'] ?? null;
-                        $dueDate = $row['due_date'] ?? $row['Fecha Vencimiento'] ?? clone now()->subDays(rand(1, 30)); 
+                        $dueDate = $row['due_date'] ?? $row['Fecha Vencimiento'] ?? $row['fecha_vencimiento'] ?? clone now()->subDays(rand(1, 30)); 
                         
                         if (!$identification) continue;
 

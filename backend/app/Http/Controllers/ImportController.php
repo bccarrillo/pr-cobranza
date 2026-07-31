@@ -22,11 +22,15 @@ class ImportController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimes:xlsx,csv'
+            'file' => 'required|file|mimes:xlsx,csv,txt'
         ]);
 
         $file = $request->file('file');
-        $path = $file->store('imports', 'local');
+        $extension = $file->getClientOriginalExtension();
+        // Forzamos a que si la extensión original es csv, se guarde como csv
+        $fileName = Str::uuid()->toString() . '.' . $extension;
+        $path = $file->storeAs('imports', $fileName, 'local');
+        
         $batchId = Str::uuid()->toString();
         $tenantId = auth()->user()->tenant_id ?? null;
 

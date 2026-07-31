@@ -1,45 +1,73 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import StatCard from '../components/Card/StatCard';
 import { DollarSign, Users, AlertCircle, TrendingUp } from 'lucide-react';
 
 const Dashboard = () => {
+  const [stats, setStats] = useState({
+    total_debt: 0,
+    recovered: 0,
+    active_debtors: 0,
+    high_risk_debt: 0
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await axios.get('/api/v1/dashboard/stats');
+        setStats(response.data);
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  // Formatter for currency
+  const formatMoney = (amount) => {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(amount);
+  };
+
   return (
     <div className="h-full flex flex-col">
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-light-text-primary tracking-tight">Resumen Ejecutivo</h2>
-        <p className="text-light-text-secondary mt-1">Monitorea el estado general de la cobranza y la actividad del Agente IA.</p>
+        <p className="text-light-text-secondary mt-1">Monitorea el estado general de la cobranza y la actividad del sistema.</p>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard 
           title="Cartera Total" 
-          value="$1.2M" 
+          value={loading ? '...' : formatMoney(stats.total_debt)} 
           icon={DollarSign} 
           trend="up" 
-          trendValue="12%"
+          trendValue="Activa"
           color="blue"
         />
         <StatCard 
-          title="Recuperado (Mes)" 
-          value="$345k" 
+          title="Monto Recuperado" 
+          value={loading ? '...' : formatMoney(stats.recovered)} 
           icon={TrendingUp} 
           trend="up" 
-          trendValue="8%"
+          trendValue="Pagos"
           color="green"
         />
         <StatCard 
           title="Deudores Activos" 
-          value="1,432" 
+          value={loading ? '...' : stats.active_debtors} 
           icon={Users} 
           color="purple"
         />
         <StatCard 
           title="Riesgo Alto (+90 días)" 
-          value="$150k" 
+          value={loading ? '...' : formatMoney(stats.high_risk_debt)} 
           icon={AlertCircle} 
           trend="down"
-          trendValue="2%"
+          trendValue="Crítico"
           color="red"
         />
       </div>

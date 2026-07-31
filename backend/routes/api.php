@@ -9,12 +9,21 @@ use App\Http\Controllers\NotificationController;
 
 use App\Http\Controllers\AIToolController;
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TenantController;
+use App\Http\Controllers\UserController;
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
 // Rutas de Uso Interno (Frontend)
 Route::prefix('v1')->group(function () {
+    Route::get('/dashboard/stats', [DashboardController::class, 'getStats']);
+    
+    Route::apiResource('tenants', TenantController::class);
+    Route::apiResource('users', UserController::class);
+
     Route::post('/imports', [ImportController::class, 'store']);
     
     Route::get('/debtors', [DebtorController::class, 'index']);

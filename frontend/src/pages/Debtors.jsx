@@ -1,26 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, MoreHorizontal, Download } from 'lucide-react';
+import { Search, Filter, MoreHorizontal, Download, UploadCloud } from 'lucide-react';
 import axios from 'axios';
+import ImportModal from '../components/Import/ImportModal';
 
 const Debtors = () => {
   const [debtors, setDebtors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+
+  const fetchDebtors = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get('/api/v1/debtors');
+      setDebtors(response.data.data || response.data);
+    } catch (err) {
+      console.error("Error fetching debtors:", err);
+      setError("Error al cargar la lista de deudores");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchDebtors = async () => {
-      try {
-        const response = await axios.get('/api/v1/debtors');
-        // Laravel paginate typically returns data inside a 'data' property
-        setDebtors(response.data.data || response.data);
-      } catch (err) {
-        console.error("Error fetching debtors:", err);
-        setError("Error al cargar la lista de deudores");
-      } finally {
-        setLoading(false);
-      }
-    };
-    
     fetchDebtors();
   }, []);
 
@@ -43,6 +45,13 @@ const Debtors = () => {
           <p className="text-light-text-secondary mt-1">Gestiona el portafolio y monitorea los estados de cuenta.</p>
         </div>
         <div className="flex items-center gap-3">
+          <button 
+            onClick={() => setIsImportModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-light-text-secondary hover:bg-slate-50 transition-colors font-medium"
+          >
+            <UploadCloud size={18} />
+            Importar
+          </button>
           <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-light-text-secondary hover:bg-slate-50 transition-colors font-medium">
             <Download size={18} />
             Exportar
@@ -123,6 +132,17 @@ const Debtors = () => {
           </table>
         </div>
       </div>
+
+      {/* Import Modal */}
+      <ImportModal 
+        isOpen={isImportModalOpen} 
+        onClose={() => setIsImportModalOpen(false)}
+        onSuccess={() => {
+          setIsImportModalOpen(false);
+          fetchDebtors(); // Reload table data after successful import
+          alert('¡Cartera importada exitosamente! Se procesará en segundo plano.');
+        }}
+      />
     </div>
   );
 };
