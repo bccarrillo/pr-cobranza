@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { UserPlus, X } from 'lucide-react';
 
-const DebtorModal = ({ isOpen, onClose, onSuccess }) => {
+const DebtorModal = ({ isOpen, onClose, onSuccess, tenantId }) => {
   const [formData, setFormData] = useState({
     identification: '',
     full_name: '',
@@ -17,10 +17,15 @@ const DebtorModal = ({ isOpen, onClose, onSuccess }) => {
 
   const handleSave = async (e) => {
     e.preventDefault();
+    if (!tenantId) {
+      setError("Debes seleccionar una empresa primero.");
+      return;
+    }
+
     setSaving(true);
     setError(null);
     try {
-      await axios.post('/api/v1/debtors', formData);
+      await axios.post('/api/v1/debtors', { ...formData, tenant_id: tenantId });
       onSuccess();
     } catch (err) {
       console.error(err);

@@ -11,6 +11,10 @@ Este documento mantiene un registro histórico de las funcionalidades implementa
 - **Gestión de Empresas (Tenants) y Usuarios:**
   - Implementación completa de CRUDs en el Backend (`TenantController` y `UserController`).
   - Creación de interfaces modernas en React (`Tenants.jsx` y `Users.jsx`) con modales funcionales para crear y editar registros.
+- **Filtro Multitenant en Cartera:**
+  - Se agregó un menú desplegable (Select) en la vista de deudores (`Debtors.jsx`) para cambiar entre Tenants.
+  - La tabla de deudores, la exportación a Excel (`GET /api/v1/debtors/export`) y la creación manual de casos (`POST /api/v1/debtors`) ahora requieren y validan el `tenant_id` activo.
+  - El modal de importación envía dinámicamente el `tenant_id` seleccionado, corrigiendo un fallo donde se inyectaba estáticamente el ID "1" (`ImportModal.jsx`).
 - **Dashboard en Tiempo Real:**
   - Se eliminó la "data falsa" (mock data) del Dashboard de React.
   - Creación del endpoint `/api/v1/dashboard/stats` en Laravel que calcula la deuda total, montos recuperados, y deudores en alto riesgo basándose en la base de datos real y aplicando el filtro Multitenant.

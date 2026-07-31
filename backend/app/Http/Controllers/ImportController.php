@@ -22,7 +22,8 @@ class ImportController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimes:xlsx,csv,txt'
+            'file' => 'required|file|mimes:xlsx,csv,txt',
+            'tenant_id' => 'required|exists:tenants,id'
         ]);
 
         $file = $request->file('file');
@@ -32,7 +33,7 @@ class ImportController extends Controller
         $path = $file->storeAs('imports', $fileName, 'local');
         
         $batchId = Str::uuid()->toString();
-        $tenantId = auth()->user()->tenant_id ?? null;
+        $tenantId = $request->tenant_id;
 
         ProcessExcelImportJob::dispatch($path, $batchId, $tenantId);
 

@@ -10,13 +10,19 @@ class DebtorController extends Controller
 {
     public function index(Request $request)
     {
-        $debtors = Debtor::orderBy('id', 'desc')->paginate(15);
+        $tenantId = $request->query('tenant_id');
+        if (!$tenantId) {
+            return response()->json(['data' => [], 'total' => 0]); // Retornar vacío si no hay tenant
+        }
+
+        $debtors = Debtor::where('tenant_id', $tenantId)->orderBy('id', 'desc')->paginate(15);
         return response()->json($debtors);
     }
 
     public function store(Request $request)
     {
         $request->validate([
+            'tenant_id' => 'required|exists:tenants,id',
             'identification' => 'required|string',
             'full_name' => 'required|string',
             'total_debt' => 'required|numeric',
@@ -25,7 +31,7 @@ class DebtorController extends Controller
         ]);
 
         $debtor = Debtor::create([
-            'tenant_id' => auth()->user()->tenant_id ?? 1,
+            'tenant_id' => $request->tenant_id,
             'identification' => $request->identification,
             'full_name' => $request->full_name,
             'total_debt' => $request->total_debt,
@@ -40,10 +46,16 @@ class DebtorController extends Controller
         return response()->json($debtor, 201);
     }
 
-    public function export()
+    public function export(Request $request)
     {
-        return response()->streamDownload(function () {
-            $debtors = Debtor::all();
+        $tenantId = $request->query('tenant_id');
+        
+        return response()->streamDownload(function () use ($tenantId) {
+            $query = Debtor::query();
+            if ($tenantId) {
+                $query->where('tenant_id', $tenantId);
+            }
+            $debtors = $query->get();
             $handle = fopen('php://output', 'w');
             
             fputcsv($handle, ['ID', 'Identificacion', 'Nombre Completo', 'Deuda Total', 'Balance Actual', 'Email', 'Telefono', 'Estado', 'Dias Mora']);

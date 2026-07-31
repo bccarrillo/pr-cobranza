@@ -6,33 +6,57 @@ import DebtorModal from '../components/Debtor/DebtorModal';
 
 const Debtors = () => {
   const [debtors, setDebtors] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [tenants, setTenants] = useState([]);
+  const [selectedTenantId, setSelectedTenantId] = useState('');
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isDebtorModalOpen, setIsDebtorModalOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
 
+  const fetchTenants = async () => {
+    try {
+      const response = await axios.get('/api/v1/tenants');
+      setTenants(response.data);
+      if (response.data.length > 0) {
+        setSelectedTenantId(response.data[0].id);
+      }
+    } catch (err) {
+      console.error("Error fetching tenants:", err);
+    }
+  };
+
   const fetchDebtors = async () => {
+    if (!selectedTenantId) {
+      setDebtors([]);
+      return;
+    }
     setLoading(true);
     try {
-      const response = await axios.get('/api/v1/debtors');
-      setDebtors(response.data.data || response.data);
+      const response = await axios.get(`/api/v1/debtors?tenant_id=${selectedTenantId}`);
+      setDebtors(response.data.data || []);
     } catch (err) {
-      console.error("Error fetching debtors:", err);
-      setError("Error al cargar la lista de deudores");
+      setError("Error cargando la cartera");
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchDebtors();
+    fetchTenants();
   }, []);
+
+  useEffect(() => {
+    if (selectedTenantId) {
+      fetchDebtors();
+    }
+  }, [selectedTenantId]);
 
   const handleExport = async () => {
     setExporting(true);
     try {
-      const response = await axios.get('/api/v1/debtors/export', {
+      const response = await axios.get(`/api/v1/debtors/export?tenant_id=${selectedTenantId}`, {
         responseType: 'blob', // Necesario para descargar archivos
       });
       const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -69,8 +93,19 @@ const Debtors = () => {
           <p className="text-light-text-secondary mt-1">Gestiona el portafolio y monitorea los estados de cuenta.</p>
         </div>
         <div className="flex items-center gap-3">
+          <select 
+            value={selectedTenantId} 
+            onChange={(e) => setSelectedTenantId(e.target.value)}
+            className="px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-light-blue/20 focus:border-light-blue"
+          >
+            <option value="" disabled>Seleccione Empresa</option>
+            {tenants.map(t => (
+              <option key={t.id} value={t.id}>{t.name}</option>
+            ))}
+          </select>
           <button 
             onClick={() => setIsDebtorModalOpen(true)}
+            disabled={!selectedTenantId}
             className="flex items-center gap-2 px-4 py-2 bg-light-blue rounded-lg text-white hover:bg-blue-600 transition-colors font-medium shadow-sm"
           >
             <Plus size={18} />
@@ -124,9 +159,13 @@ const Debtors = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {loading ? (
+              {!selectedTenantId ? (
                 <tr>
-                  <td colSpan="6" className="py-8 text-center text-slate-400">Cargando deudores...</td>
+                  <td colSpan="6" className="py-8 text-center text-slate-400">Por favor seleccione una empresa para ver sus deudores.</td>
+                </tr>
+              ) : loading ? (
+                <tr>
+                  <td colSpan="6" className="py-8 text-center text-slate-400">Cargando datos...</td>
                 </tr>
               ) : error ? (
                 <tr>
@@ -169,6 +208,7 @@ const Debtors = () => {
       <ImportModal 
         isOpen={isImportModalOpen} 
         onClose={() => setIsImportModalOpen(false)}
+        tenantId={selectedTenantId}
         onSuccess={() => {
           setIsImportModalOpen(false);
           fetchDebtors(); // Reload table data after successful import
@@ -180,6 +220,7 @@ const Debtors = () => {
       <DebtorModal 
         isOpen={isDebtorModalOpen}
         onClose={() => setIsDebtorModalOpen(false)}
+        tenantId={selectedTenantId}
         onSuccess={() => {
           setIsDebtorModalOpen(false);
           fetchDebtors(); // Reload table data after new case

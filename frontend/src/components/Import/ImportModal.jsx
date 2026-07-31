@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { UploadCloud, X, FileSpreadsheet } from 'lucide-react';
 
-const ImportModal = ({ isOpen, onClose, onSuccess }) => {
+const ImportModal = ({ isOpen, onClose, onSuccess, tenantId }) => {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
@@ -18,11 +18,14 @@ const ImportModal = ({ isOpen, onClose, onSuccess }) => {
 
   const handleUpload = async () => {
     if (!file) return;
+    if (!tenantId) {
+      setError("Debes seleccionar un tenant primero.");
+      return;
+    }
 
     const formData = new FormData();
     formData.append('file', file);
-    // Nota: El backend espera 'tenant_id'. En un entorno real se tomaría del auth user, aquí simulamos.
-    formData.append('tenant_id', 1); 
+    formData.append('tenant_id', tenantId); 
 
     setUploading(true);
     setError(null);
