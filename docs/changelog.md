@@ -16,6 +16,10 @@ Este documento mantiene un registro histórico de las funcionalidades implementa
   - Creación del endpoint `/api/v1/dashboard/stats` en Laravel que calcula la deuda total, montos recuperados, y deudores en alto riesgo basándose en la base de datos real y aplicando el filtro Multitenant.
 - **Importador Visual (React):**
   - Implementación de un componente Drag & Drop (`ImportModal.jsx`) en la vista de deudores que se comunica directamente con la API de importación de Laravel.
+- **Creación y Exportación de Deudores:**
+  - Implementación del Modal manual para añadir un "Nuevo Caso" (`DebtorModal.jsx`).
+  - Creación del endpoint `POST /api/v1/debtors` para insertar nuevos deudores en tiempo real.
+  - Creación del endpoint `GET /api/v1/debtors/export` que utiliza `streamDownload` de Laravel para agrupar y descargar masivamente la cartera entera en un archivo `.csv`.
 
 ### 🛡️ Arquitectura y Seguridad
 - **Autenticación Machine-to-Machine (M2M) para el Agente IA:**
