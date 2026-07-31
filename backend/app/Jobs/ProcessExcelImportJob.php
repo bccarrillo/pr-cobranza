@@ -16,14 +16,16 @@ class ProcessExcelImportJob implements ShouldQueue
 
     protected $filePath;
     protected $batchId;
+    protected $tenantId;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(string $filePath, string $batchId)
+    public function __construct(string $filePath, string $batchId, ?int $tenantId = null)
     {
         $this->filePath = $filePath;
         $this->batchId = $batchId;
+        $this->tenantId = $tenantId;
     }
 
     /**
@@ -48,6 +50,9 @@ class ProcessExcelImportJob implements ShouldQueue
                         $identification = $row['identification'] ?? $row['Cédula'] ?? $row['DNI'] ?? $row['cedula'] ?? null;
                         $fullName = $row['full_name'] ?? $row['Nombre'] ?? $row['nombre'] ?? null;
                         $totalDebt = $row['total_debt'] ?? $row['Deuda'] ?? $row['deuda'] ?? 0;
+                        $phone = $row['phone'] ?? $row['Teléfono'] ?? $row['telefono'] ?? null;
+                        $email = $row['email'] ?? $row['Email'] ?? $row['correo'] ?? null;
+                        $dueDate = $row['due_date'] ?? $row['Fecha Vencimiento'] ?? clone now()->subDays(rand(1, 30)); 
                         
                         if (!$identification) continue;
 
@@ -55,12 +60,19 @@ class ProcessExcelImportJob implements ShouldQueue
                         unset($extraData['identification'], $extraData['Cédula'], $extraData['DNI'], $extraData['cedula']);
                         unset($extraData['full_name'], $extraData['Nombre'], $extraData['nombre']);
                         unset($extraData['total_debt'], $extraData['Deuda'], $extraData['deuda']);
+                        unset($extraData['phone'], $extraData['Teléfono'], $extraData['telefono']);
+                        unset($extraData['email'], $extraData['Email'], $extraData['correo']);
+                        unset($extraData['due_date'], $extraData['Fecha Vencimiento']);
 
                         $debtorsData[] = [
+                            'tenant_id' => $this->tenantId,
                             'identification' => (string) $identification,
                             'full_name' => $fullName,
                             'total_debt' => (float) $totalDebt,
                             'current_balance' => (float) $totalDebt,
+                            'phone' => $phone,
+                            'email' => $email,
+                            'due_date' => $dueDate,
                             'status' => 'pending',
                             'batch_id' => $this->batchId,
                             'extra_data' => json_encode($extraData),
@@ -70,7 +82,7 @@ class ProcessExcelImportJob implements ShouldQueue
                     }
 
                     if (count($debtorsData) > 0) {
-                        Debtor::upsert($debtorsData, ['identification'], ['full_name', 'total_debt', 'current_balance', 'batch_id', 'extra_data', 'status', 'updated_at']);
+                        Debtor::upsert($debtorsData, ['identification'], ['tenant_id', 'full_name', 'total_debt', 'current_balance', 'phone', 'email', 'due_date', 'batch_id', 'extra_data', 'status', 'updated_at']);
                     }
                 });
         } catch (\Exception $e) {

@@ -28,8 +28,9 @@ class ImportController extends Controller
         $file = $request->file('file');
         $path = $file->store('imports', 'local');
         $batchId = Str::uuid()->toString();
+        $tenantId = auth()->user()->tenant_id ?? null;
 
-        ProcessExcelImportJob::dispatch($path, $batchId);
+        ProcessExcelImportJob::dispatch($path, $batchId, $tenantId);
 
         return response()->json([
             'message' => 'Import queued successfully',

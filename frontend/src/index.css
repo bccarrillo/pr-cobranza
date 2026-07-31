@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --color-light-bg: #f8f9fc;
+  --color-light-card: #ffffff;
+  --color-light-text-primary: #1e293b;
+  --color-light-text-secondary: #64748b;
+  --color-light-blue: #3b82f6;
+  --color-light-blue-soft: #e0f2fe;
+  --color-light-purple: #8b5cf6;
+  --color-light-purple-soft: #ede9fe;
+}
+
+@layer base {
+  body {
+    @apply bg-light-bg text-light-text-primary antialiased;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-md border border-slate-200/80 shadow-sm rounded-xl p-6 transition-all duration-300 hover:shadow-md;
+  }
+  
+  .btn-primary {
+    @apply bg-sky-100 hover:bg-sky-200 text-blue-600 font-medium px-4 py-2 rounded-lg transition-colors duration-200 cursor-pointer;
+  }
+  
+  .pill-preventive {
+    @apply bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-semibold;
+  }
+  
+  .pill-early {
+    @apply bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-semibold;
+  }
+
+  .pill-medium {
+    @apply bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-xs font-semibold;
+  }
+  
+  .pill-late {
+    @apply bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold;
+  }
+}
