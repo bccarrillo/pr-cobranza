@@ -14,6 +14,57 @@ class DebtorController extends Controller
         return response()->json($debtors);
     }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'identification' => 'required|string',
+            'full_name' => 'required|string',
+            'total_debt' => 'required|numeric',
+            'email' => 'nullable|email',
+            'phone' => 'nullable|string'
+        ]);
+
+        $debtor = Debtor::create([
+            'tenant_id' => auth()->user()->tenant_id ?? 1,
+            'identification' => $request->identification,
+            'full_name' => $request->full_name,
+            'total_debt' => $request->total_debt,
+            'current_balance' => $request->total_debt,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'status' => 'pending',
+            'due_date' => now()->toDateString(),
+            'batch_id' => \Illuminate\Support\Str::uuid()->toString()
+        ]);
+
+        return response()->json($debtor, 201);
+    }
+
+    public function export()
+    {
+        return response()->streamDownload(function () {
+            $debtors = Debtor::all();
+            $handle = fopen('php://output', 'w');
+            
+            fputcsv($handle, ['ID', 'Identificacion', 'Nombre Completo', 'Deuda Total', 'Balance Actual', 'Email', 'Telefono', 'Estado', 'Dias Mora']);
+
+            foreach ($debtors as $row) {
+                fputcsv($handle, [
+                    $row->id,
+                    $row->identification,
+                    $row->full_name,
+                    $row->total_debt,
+                    $row->current_balance,
+                    $row->email,
+                    $row->phone,
+                    $row->status,
+                    $row->days_overdue
+                ]);
+            }
+            fclose($handle);
+        }, 'cartera_export.csv', ['Content-Type' => 'text/csv']);
+    }
+
     public function search(Request $request)
     {
         $q = $request->query('q');

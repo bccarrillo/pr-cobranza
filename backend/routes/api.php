@@ -26,7 +26,9 @@ Route::prefix('v1')->group(function () {
 
     Route::post('/imports', [ImportController::class, 'store']);
     
+    Route::get('/debtors/export', [DebtorController::class, 'export']);
     Route::get('/debtors', [DebtorController::class, 'index']);
+    Route::post('/debtors', [DebtorController::class, 'store']);
     Route::get('/debtors/search', [DebtorController::class, 'search']);
     Route::get('/debtors/{id}', [DebtorController::class, 'show']);
     Route::patch('/debtors/{id}/status', [DebtorController::class, 'status']);

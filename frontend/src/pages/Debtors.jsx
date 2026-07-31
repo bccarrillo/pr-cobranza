@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, MoreHorizontal, Download, UploadCloud } from 'lucide-react';
+import { Search, Filter, MoreHorizontal, Download, UploadCloud, Plus } from 'lucide-react';
 import axios from 'axios';
 import ImportModal from '../components/Import/ImportModal';
+import DebtorModal from '../components/Debtor/DebtorModal';
 
 const Debtors = () => {
   const [debtors, setDebtors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [isDebtorModalOpen, setIsDebtorModalOpen] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   const fetchDebtors = async () => {
     setLoading(true);
@@ -25,6 +28,27 @@ const Debtors = () => {
   useEffect(() => {
     fetchDebtors();
   }, []);
+
+  const handleExport = async () => {
+    setExporting(true);
+    try {
+      const response = await axios.get('/api/v1/debtors/export', {
+        responseType: 'blob', // Necesario para descargar archivos
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'cartera_export.csv');
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (err) {
+      console.error("Error exporting:", err);
+      alert("Error al exportar los datos.");
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const getStatusPill = (status) => {
     const map = {
@@ -46,18 +70,26 @@ const Debtors = () => {
         </div>
         <div className="flex items-center gap-3">
           <button 
+            onClick={() => setIsDebtorModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-light-blue rounded-lg text-white hover:bg-blue-600 transition-colors font-medium shadow-sm"
+          >
+            <Plus size={18} />
+            Nuevo Caso
+          </button>
+          <button 
             onClick={() => setIsImportModalOpen(true)}
             className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-light-text-secondary hover:bg-slate-50 transition-colors font-medium"
           >
             <UploadCloud size={18} />
             Importar
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-light-text-secondary hover:bg-slate-50 transition-colors font-medium">
+          <button 
+            onClick={handleExport}
+            disabled={exporting}
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-light-text-secondary hover:bg-slate-50 transition-colors font-medium disabled:opacity-70"
+          >
             <Download size={18} />
-            Exportar
-          </button>
-          <button className="btn-primary">
-            + Nuevo Caso
+            {exporting ? 'Exportando...' : 'Exportar'}
           </button>
         </div>
       </div>
@@ -141,6 +173,16 @@ const Debtors = () => {
           setIsImportModalOpen(false);
           fetchDebtors(); // Reload table data after successful import
           alert('¡Cartera importada exitosamente! Se procesará en segundo plano.');
+        }}
+      />
+
+      {/* Nuevo Caso Modal */}
+      <DebtorModal 
+        isOpen={isDebtorModalOpen}
+        onClose={() => setIsDebtorModalOpen(false)}
+        onSuccess={() => {
+          setIsDebtorModalOpen(false);
+          fetchDebtors(); // Reload table data after new case
         }}
       />
     </div>
