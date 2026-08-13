@@ -58,6 +58,7 @@ Route::prefix('ai')->middleware('auth:sanctum')->group(function () {
     Route::get('/debtors/{id}', [DebtorController::class, 'show']);
     Route::get('/debtors/{id}/payments', [DebtorController::class, 'getPayments']);
     Route::post('/debtors/{id}/payments', [DebtorController::class, 'payment']);
+    Route::patch('/debtors/{id}/status', [DebtorController::class, 'updateStatus']);
     Route::post('/debtors/{id}/interactions', [InteractionController::class, 'store']);
     Route::post('/notifications/email', [NotificationController::class, 'sendEmail']);
 });
