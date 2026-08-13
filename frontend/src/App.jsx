@@ -7,6 +7,7 @@ import Tenants from './pages/Tenants';
 import Users from './pages/Users';
 import AIIntegration from './pages/AIIntegration';
 import Payments from './pages/Payments';
+import Campaigns from './pages/Campaigns';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="debtors" element={<Debtors />} />
           <Route path="payments" element={<Payments />} />
+          <Route path="campaigns" element={<Campaigns />} />
           <Route path="tenants" element={<Tenants />} />
           <Route path="users" element={<Users />} />
           <Route path="ai-integration" element={<AIIntegration />} />

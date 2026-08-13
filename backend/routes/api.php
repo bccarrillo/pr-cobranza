@@ -7,6 +7,7 @@ use App\Http\Controllers\DebtorController;
 use App\Http\Controllers\InteractionController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\CampaignController;
 
 use App\Http\Controllers\AIToolController;
 
@@ -24,6 +25,13 @@ Route::prefix('v1')->group(function () {
     
     Route::apiResource('tenants', TenantController::class);
     Route::apiResource('users', UserController::class);
+    
+    // Automatizaciones (Campañas)
+    Route::get('/campaigns', [CampaignController::class, 'index']);
+    Route::post('/campaigns', [CampaignController::class, 'store']);
+    Route::put('/campaigns/{id}', [CampaignController::class, 'update']);
+    Route::delete('/campaigns/{id}', [CampaignController::class, 'destroy']);
+    Route::patch('/campaigns/{id}/toggle', [CampaignController::class, 'toggle']);
 
     Route::post('/imports', [ImportController::class, 'store']);
     
