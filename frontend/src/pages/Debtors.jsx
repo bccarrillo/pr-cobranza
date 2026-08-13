@@ -168,15 +168,15 @@ const Debtors = () => {
 
         {/* Table Content */}
         <div className="flex-1 overflow-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full min-w-[800px] text-left border-collapse">
             <thead className="bg-slate-50/80 sticky top-0 backdrop-blur-sm z-10">
               <tr>
-                <th className="py-3 px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Cliente</th>
-                <th className="py-3 px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Identificación</th>
-                <th className="py-3 px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Deuda Total</th>
-                <th className="py-3 px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Días Mora</th>
-                <th className="py-3 px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Estado</th>
-                <th className="py-3 px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200 text-right">Acciones</th>
+                <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Cliente</th>
+                <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Identificación</th>
+                <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Deuda Total</th>
+                <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Días Mora</th>
+                <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Estado</th>
+                <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200 text-right">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">

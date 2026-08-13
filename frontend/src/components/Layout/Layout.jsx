@@ -1,22 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { LayoutDashboard, Users, Settings, LogOut, Building2, UserCircle, UploadCloud, Bot, Banknote, Megaphone } from 'lucide-react';
+import { LayoutDashboard, Users, Settings, LogOut, Building2, UserCircle, UploadCloud, Bot, Banknote, Megaphone, Menu, X } from 'lucide-react';
 
 const Layout = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
-    <div className="flex h-screen bg-light-bg text-light-text-primary font-sans">
+    <div className="flex h-screen bg-light-bg text-light-text-primary font-sans overflow-hidden">
+      
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar - Glassmorphism */}
-      <aside className="w-64 bg-white/70 backdrop-blur-md border-r border-slate-200/80 flex flex-col transition-all duration-300 relative z-10">
-        <div className="p-6">
-          <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-light-blue to-light-purple">
-            PR Cobranza
-          </h1>
-          <p className="text-xs text-light-text-secondary mt-1 tracking-wider uppercase font-semibold">Workspace</p>
+      <aside className={`fixed md:relative inset-y-0 left-0 w-64 bg-white/90 md:bg-white/70 backdrop-blur-md border-r border-slate-200/80 flex flex-col transition-transform duration-300 z-50 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+        <div className="p-6 flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-light-blue to-light-purple">
+              PR Cobranza
+            </h1>
+            <p className="text-xs text-light-text-secondary mt-1 tracking-wider uppercase font-semibold">Workspace</p>
+          </div>
+          <button 
+            className="md:hidden p-1 text-slate-400 hover:text-slate-600"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <X size={24} />
+          </button>
         </div>
 
-        <nav className="flex-1 px-4 space-y-2 mt-4">
+        <nav className="flex-1 px-4 space-y-2 mt-4 overflow-y-auto pb-4">
           <NavLink
             to="/"
+            onClick={() => setIsMobileMenuOpen(false)}
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
                 isActive
@@ -31,6 +51,7 @@ const Layout = () => {
 
           <NavLink
             to="/tenants"
+            onClick={() => setIsMobileMenuOpen(false)}
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
                 isActive
@@ -45,6 +66,7 @@ const Layout = () => {
 
           <NavLink
             to="/users"
+            onClick={() => setIsMobileMenuOpen(false)}
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
                 isActive
@@ -59,6 +81,7 @@ const Layout = () => {
 
           <NavLink
             to="/debtors"
+            onClick={() => setIsMobileMenuOpen(false)}
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
                 isActive
@@ -73,6 +96,7 @@ const Layout = () => {
 
           <NavLink
             to="/payments"
+            onClick={() => setIsMobileMenuOpen(false)}
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
                 isActive
@@ -87,6 +111,7 @@ const Layout = () => {
 
           <NavLink
             to="/campaigns"
+            onClick={() => setIsMobileMenuOpen(false)}
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
                 isActive
@@ -101,6 +126,7 @@ const Layout = () => {
 
           <NavLink
             to="/ai-integration"
+            onClick={() => setIsMobileMenuOpen(false)}
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium mt-4 border border-dashed border-slate-200 ${
                 isActive
@@ -114,7 +140,7 @@ const Layout = () => {
           </NavLink>
         </nav>
 
-        <div className="p-4 border-t border-slate-200/80 mt-auto">
+        <div className="p-4 border-t border-slate-200/80 mt-auto bg-white/50">
           <button className="flex w-full items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 text-light-text-secondary hover:bg-red-50 hover:text-red-500 font-medium">
             <LogOut size={20} />
             <span>Cerrar Sesión</span>
@@ -123,17 +149,23 @@ const Layout = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col h-screen overflow-hidden">
+      <main className="flex-1 flex flex-col h-screen overflow-hidden w-full">
         {/* Top Navbar */}
-        <header className="h-16 bg-white/50 backdrop-blur-md border-b border-slate-200/80 flex items-center justify-between px-8 z-10">
+        <header className="h-16 bg-white/50 backdrop-blur-md border-b border-slate-200/80 flex items-center justify-between px-4 md:px-8 z-10">
           <div className="flex items-center text-light-text-secondary">
+            <button 
+              className="md:hidden p-2 mr-2 rounded-lg hover:bg-slate-100 transition-colors text-slate-500"
+              onClick={() => setIsMobileMenuOpen(true)}
+            >
+              <Menu size={24} />
+            </button>
             {/* Breadcrumbs placeholder or Search bar */}
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 md:gap-4">
             <button className="p-2 rounded-full hover:bg-slate-100 transition-colors text-light-text-secondary">
               <Settings size={20} />
             </button>
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-light-blue to-light-purple flex items-center justify-center text-white font-bold shadow-md">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-light-blue to-light-purple flex items-center justify-center text-white font-bold shadow-md text-sm md:text-base">
               A
             </div>
           </div>
