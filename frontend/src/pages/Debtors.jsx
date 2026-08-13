@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, MoreHorizontal, Download, UploadCloud, Plus, Receipt } from 'lucide-react';
+import { Search, Filter, MoreHorizontal, Download, UploadCloud, Plus, Receipt, Bot, AlertCircle } from 'lucide-react';
 import axios from 'axios';
 import ImportModal from '../components/Import/ImportModal';
 import DebtorModal from '../components/Debtor/DebtorModal';
 import PaymentHistoryModal from '../components/Debtor/PaymentHistoryModal';
+import InteractionHistoryModal from '../components/Debtor/InteractionHistoryModal';
 
 const Debtors = () => {
   const [debtors, setDebtors] = useState([]);
@@ -14,8 +15,10 @@ const Debtors = () => {
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isDebtorModalOpen, setIsDebtorModalOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isInteractionModalOpen, setIsInteractionModalOpen] = useState(false);
   const [selectedDebtor, setSelectedDebtor] = useState(null);
   const [exporting, setExporting] = useState(false);
+  const [filterRequiresHuman, setFilterRequiresHuman] = useState(false);
 
   const fetchTenants = async () => {
     try {
@@ -83,10 +86,16 @@ const Debtors = () => {
       'early_stage': { class: 'pill-early', label: 'Mora Temprana' },
       'medium_stage': { class: 'pill-medium', label: 'Mora Media' },
       'late_stage': { class: 'pill-late', label: 'Mora Tardía' },
+      'requires_human': { class: 'bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold border border-red-200 animate-pulse', label: 'Requiere Humano' },
+      'pending': { class: 'bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-xs font-semibold', label: 'Pendiente' },
     };
     const mapped = map[status] || { class: 'bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-xs font-semibold', label: status };
     return <span className={mapped.class}>{mapped.label}</span>;
   };
+
+  const displayedDebtors = filterRequiresHuman 
+    ? debtors.filter(d => d.status === 'requires_human') 
+    : debtors;
 
   return (
     <div className="h-full flex flex-col">
@@ -143,9 +152,18 @@ const Debtors = () => {
               className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-light-blue/20 focus:border-light-blue transition-all"
             />
           </div>
-          <button className="p-2 rounded-lg border border-slate-200 text-light-text-secondary hover:bg-slate-50 transition-colors">
-            <Filter size={18} />
-          </button>
+          <div className="flex gap-2">
+            <button 
+              onClick={() => setFilterRequiresHuman(!filterRequiresHuman)}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${filterRequiresHuman ? 'bg-red-50 border-red-200 text-red-600' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+            >
+              <AlertCircle size={16} />
+              {filterRequiresHuman ? 'Mostrando Handoff' : 'Atención Requerida'}
+            </button>
+            <button className="p-2 rounded-lg border border-slate-200 text-light-text-secondary hover:bg-slate-50 transition-colors">
+              <Filter size={18} />
+            </button>
+          </div>
         </div>
 
         {/* Table Content */}
@@ -174,12 +192,12 @@ const Debtors = () => {
                 <tr>
                   <td colSpan="6" className="py-8 text-center text-red-400">{error}</td>
                 </tr>
-              ) : debtors.length === 0 ? (
+              ) : displayedDebtors.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="py-8 text-center text-slate-400">No hay deudores registrados.</td>
+                  <td colSpan="6" className="py-8 text-center text-slate-400">No hay deudores que coincidan con la búsqueda.</td>
                 </tr>
-              ) : debtors.map((d) => (
-                <tr key={d.id} className="hover:bg-slate-50/50 transition-colors group">
+              ) : displayedDebtors.map((d) => (
+                <tr key={d.id} className={`transition-colors group ${d.status === 'requires_human' ? 'bg-red-50/30 hover:bg-red-50/60' : 'hover:bg-slate-50/50'}`}>
                   <td className="py-4 px-6">
                     <p className="font-medium text-light-text-primary">{d.full_name}</p>
                   </td>
@@ -197,6 +215,16 @@ const Debtors = () => {
                   </td>
                   <td className="py-4 px-6">
                     <div className="flex gap-2 justify-end">
+                      <button 
+                        onClick={() => {
+                          setSelectedDebtor(d);
+                          setIsInteractionModalOpen(true);
+                        }}
+                        className="p-1 text-slate-400 hover:text-purple-500 transition-colors"
+                        title="Ver Bitácora IA"
+                      >
+                        <Bot size={18} />
+                      </button>
                       <button 
                         onClick={() => {
                           setSelectedDebtor(d);
@@ -252,6 +280,17 @@ const Debtors = () => {
         debtor={selectedDebtor}
         onSuccess={() => fetchDebtors()}
       />
+
+      {/* Bitácora de Interacciones IA Modal */}
+      {isInteractionModalOpen && selectedDebtor && (
+        <InteractionHistoryModal
+          debtor={selectedDebtor}
+          onClose={() => {
+            setIsInteractionModalOpen(false);
+            setSelectedDebtor(null);
+          }}
+        />
+      )}
     </div>
   );
 };

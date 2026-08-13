@@ -4,6 +4,26 @@ Este documento mantiene un registro histórico de las funcionalidades implementa
 
 ---
 
+## [1.3.0] - Automatización Híbrida y Campañas
+**Fecha:** 13 de Agosto de 2026
+
+### 🚀 Nuevas Funcionalidades
+- **Panel Visual de Automatizaciones (`/campaigns`):**
+  - Creación del panel administrativo en React para configurar y parametrizar envíos masivos.
+  - Implementación de la tabla `campaigns` con atributos: `tenant_id`, `name`, `days_offset`, `condition_type`, `message_template` e `is_active`.
+  - Capacidad de seleccionar el **Tipo de Ejecución**: 
+    - *Exacto*: Diseñado como un "francotirador" para contactar a deudores en un día específico.
+    - *Continuo (Repetitivo)*: Diseñado para bombardear diariamente a deudores que superan un umbral de atraso.
+- **Motor Cronjob Maestro (`ProcessCampaigns`):**
+  - Implementación del comando de consola `php artisan campaigns:process` encargado de barrer la base de datos de deudores, calcular matemáticamente sus fechas de vencimiento según el offset, y generar listas de destinatarios.
+  - El motor delega el proceso pesado al sistema asíncrono usando **Queues & Jobs**.
+- **Envío Real de Correos Electrónicos (Background Jobs):**
+  - Creación del Worker Job `SendCampaignEmailJob` y la plantilla visual `CampaignMailable`.
+  - Inyección dinámica de variables (reemplazando `{nombre}` y `{deuda}` por los datos reales del deudor).
+  - Integración nativa con los logs del sistema (`MAIL_MAILER=log`) para facilitar pruebas locales sin requerir servidor SMTP.
+
+---
+
 ## [1.2.0] - Módulo Global e Historial de Pagos
 **Fecha:** 12 de Agosto de 2026
 

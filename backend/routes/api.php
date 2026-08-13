@@ -42,10 +42,10 @@ Route::prefix('v1')->group(function () {
     Route::get('/debtors', [DebtorController::class, 'index']);
     Route::post('/debtors', [DebtorController::class, 'store']);
     Route::get('/debtors/search', [DebtorController::class, 'search']);
-    Route::get('/debtors/{id}', [DebtorController::class, 'show']);
+    Route::patch('/debtors/{id}/status', [DebtorController::class, 'updateStatus']);
     Route::get('/debtors/{id}/payments', [DebtorController::class, 'getPayments']);
     Route::post('/debtors/{id}/payments', [DebtorController::class, 'payment']);
-    Route::patch('/debtors/{id}/status', [DebtorController::class, 'status']);
+    Route::get('/debtors/{id}/interactions', [InteractionController::class, 'index']);
 });
 
 // Rutas de Herramientas de Inteligencia Artificial (M2M API)

@@ -9,7 +9,18 @@ use App\Models\InteractionLog;
 class InteractionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of interactions for a specific debtor.
+     */
+    public function index(string $id)
+    {
+        $debtor = Debtor::findOrFail($id);
+        $interactions = $debtor->interactionLogs()->orderBy('created_at', 'desc')->get();
+        
+        return response()->json($interactions);
+    }
+
+    /**
+     * Store a newly created interaction.
      */
     public function store(Request $request, string $id)
     {

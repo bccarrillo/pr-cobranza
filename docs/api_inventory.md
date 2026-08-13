@@ -37,6 +37,15 @@ Estas rutas están diseñadas para ser consumidas por la interfaz de usuario (Re
 | `/api/v1/debtors/{id}/payments` | `GET` | Obtiene el historial de pagos de un solo deudor | ✅ Listo |
 | `/api/v1/debtors/{id}/payments` | `POST` | Registra manualmente un abono para el deudor | ✅ Listo |
 
+### 📢 Módulo de Automatizaciones (Campañas)
+| Endpoint | Método | Descripción | Estado |
+| :--- | :--- | :--- | :--- |
+| `/api/v1/campaigns` | `GET` | Lista las reglas de envío para la empresa seleccionada | ✅ Listo |
+| `/api/v1/campaigns` | `POST` | Crea una nueva regla parametrizada | ✅ Listo |
+| `/api/v1/campaigns/{id}` | `PUT` | Edita una regla existente | ✅ Listo |
+| `/api/v1/campaigns/{id}/toggle` | `PATCH`| Activa o pausa la automatización | ✅ Listo |
+| `/api/v1/campaigns/{id}` | `DELETE`| Elimina la regla de automatización | ✅ Listo |
+
 ---
 
 ## 2. Herramientas de IA (AI Tools - Function Calling)
