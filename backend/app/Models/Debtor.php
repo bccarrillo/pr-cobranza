@@ -19,6 +19,16 @@ class Debtor extends Model
         'due_date' => 'date',
     ];
 
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
     public function interactionLogs()
     {
         return $this->hasMany(InteractionLog::class);

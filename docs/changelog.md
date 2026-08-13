@@ -4,6 +4,28 @@ Este documento mantiene un registro histórico de las funcionalidades implementa
 
 ---
 
+## [1.2.0] - Módulo Global e Historial de Pagos
+**Fecha:** 12 de Agosto de 2026
+
+### 🚀 Nuevas Funcionalidades
+- **Módulo Global de Pagos y Recaudos (`/payments`):**
+  - Implementación de un componente completo en React (`Payments.jsx`) para que los agentes administrativos visualicen las transacciones.
+  - El sistema integra filtros compuestos en Backend y Frontend por Empresa, Rangos de Fecha y Búsqueda por texto (Nombre/ID del cliente).
+  - Integración nativa de botón de "Exportar Excel" que descarga un archivo `.csv` filtrado (usando `StreamDownload` con encabezado BOM en PHP).
+- **Historial de Pagos Individual:**
+  - Creación de una tabla `payments` ligada al modelo de `Debtor` con llaves foráneas y soporte Multitenant.
+  - Añadido el componente visual `PaymentHistoryModal.jsx` a la lista de deudores, accesible mediante un ícono de recibo.
+  - Incorporado un formulario en el modal que consume la ruta POST para procesar abonos en caliente, reflejando al instante los datos y re-calculando el saldo en tiempo real.
+
+### 🐛 Corrección de Errores (Bug Fixes)
+- **Desfase de Zonas Horarias (Timezone Bug):**
+  - **Problema:** Los pagos se guardaban en la base de datos basándose en el reloj Universal de Greenwich (UTC) del servidor, pero el Frontend renderizaba la fecha usando las reglas de zona horaria local (`UTC-05:00`), causando que los pagos del día 12 aparecieran escondidos bajo el filtro del día 13 en las mañanas/tardes del lado de la base de datos, o que pagos recién registrados se mostraran un día antes visualmente.
+  - **Solución:**
+    - Ajustada la constante `'timezone' => 'America/Bogota'` dentro del archivo maestro `config/app.php` de Laravel.
+    - Se reforzaron las visualizaciones de Frontend agregando un offset neutral (`+ 'T12:00:00'`) durante el formateo en `Payments.jsx` y `PaymentHistoryModal.jsx` para blindar la interpretación nativa del navegador y frenar el desfase horario retroactivo en el calendario visual.
+
+---
+
 ## [1.1.0] - Implementación Core y Bug Fixes
 **Fecha:** 31 de Julio de 2026
 

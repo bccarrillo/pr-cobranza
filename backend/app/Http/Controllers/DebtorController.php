@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Debtor;
+use App\Models\Payment;
 use App\Jobs\SendNotificationEmailJob;
 
 class DebtorController extends Controller
@@ -126,10 +127,24 @@ class DebtorController extends Controller
     {
         $request->validate([
             'amount' => 'required|numeric|min:1',
-            'date' => 'nullable|date'
+            'date' => 'nullable|date',
+            'payment_method' => 'nullable|string',
+            'reference_number' => 'nullable|string',
+            'notes' => 'nullable|string'
         ]);
 
         $debtor = Debtor::findOrFail($id);
+        
+        // Registrar en la nueva tabla de historial
+        $payment = Payment::create([
+            'tenant_id' => $debtor->tenant_id,
+            'debtor_id' => $debtor->id,
+            'amount' => $request->amount,
+            'payment_date' => $request->date ?? now()->toDateString(),
+            'payment_method' => $request->payment_method ?? 'Transferencia / Link IA',
+            'reference_number' => $request->reference_number,
+            'notes' => $request->notes,
+        ]);
         
         $newBalance = max(0, $debtor->current_balance - $request->amount);
         $debtor->update([
@@ -143,8 +158,8 @@ class DebtorController extends Controller
             $invoiceData = [
                 'debtor_name' => $debtor->full_name,
                 'amount' => $request->amount,
-                'invoice_number' => 'ABONO-' . time(),
-                'date' => $request->date ?? now()->format('Y-m-d'),
+                'invoice_number' => 'ABONO-' . $payment->id, // Usamos el ID del pago
+                'date' => $payment->payment_date,
                 'message' => "Hemos procesado tu abono de $" . number_format($request->amount, 2) . " exitosamente. Tu saldo pendiente actualizado es de $" . number_format($newBalance, 2),
             ];
             
@@ -153,7 +168,15 @@ class DebtorController extends Controller
         
         return response()->json([
             'message' => 'Payment registered successfully and email queued (if available)', 
-            'current_balance' => $debtor->current_balance
+            'current_balance' => $debtor->current_balance,
+            'payment_id' => $payment->id
         ]);
+    }
+
+    public function getPayments(string $id)
+    {
+        $debtor = Debtor::findOrFail($id);
+        $payments = $debtor->payments()->orderBy('payment_date', 'desc')->orderBy('id', 'desc')->get();
+        return response()->json($payments);
     }
 }

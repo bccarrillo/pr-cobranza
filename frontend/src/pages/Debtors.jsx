@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, MoreHorizontal, Download, UploadCloud, Plus } from 'lucide-react';
+import { Search, Filter, MoreHorizontal, Download, UploadCloud, Plus, Receipt } from 'lucide-react';
 import axios from 'axios';
 import ImportModal from '../components/Import/ImportModal';
 import DebtorModal from '../components/Debtor/DebtorModal';
+import PaymentHistoryModal from '../components/Debtor/PaymentHistoryModal';
 
 const Debtors = () => {
   const [debtors, setDebtors] = useState([]);
@@ -12,6 +13,8 @@ const Debtors = () => {
   const [error, setError] = useState(null);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isDebtorModalOpen, setIsDebtorModalOpen] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [selectedDebtor, setSelectedDebtor] = useState(null);
   const [exporting, setExporting] = useState(false);
 
   const fetchTenants = async () => {
@@ -192,10 +195,22 @@ const Debtors = () => {
                   <td className="py-4 px-6">
                     {getStatusPill(d.status)}
                   </td>
-                  <td className="py-4 px-6 text-right">
-                    <button className="p-1 rounded-md text-slate-400 hover:text-light-blue hover:bg-light-blue-soft transition-colors opacity-0 group-hover:opacity-100">
-                      <MoreHorizontal size={18} />
-                    </button>
+                  <td className="py-4 px-6">
+                    <div className="flex gap-2 justify-end">
+                      <button 
+                        onClick={() => {
+                          setSelectedDebtor(d);
+                          setIsPaymentModalOpen(true);
+                        }}
+                        className="p-1 text-slate-400 hover:text-green-500 transition-colors"
+                        title="Ver Pagos"
+                      >
+                        <Receipt size={18} />
+                      </button>
+                      <button className="p-1 text-slate-400 hover:text-light-blue transition-colors">
+                        <MoreHorizontal size={18} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -225,6 +240,17 @@ const Debtors = () => {
           setIsDebtorModalOpen(false);
           fetchDebtors(); // Reload table data after new case
         }}
+      />
+
+      {/* Historial de Pagos Modal */}
+      <PaymentHistoryModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => {
+          setIsPaymentModalOpen(false);
+          setSelectedDebtor(null);
+        }}
+        debtor={selectedDebtor}
+        onSuccess={() => fetchDebtors()}
       />
     </div>
   );

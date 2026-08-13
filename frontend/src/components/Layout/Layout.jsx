@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { LayoutDashboard, Users, Settings, LogOut, Building2, UserCircle, UploadCloud, Bot } from 'lucide-react';
+import { LayoutDashboard, Users, Settings, LogOut, Building2, UserCircle, UploadCloud, Bot, Banknote } from 'lucide-react';
 
 const Layout = () => {
   return (
@@ -69,6 +69,20 @@ const Layout = () => {
           >
             <Users size={20} />
             <span>Deudores</span>
+          </NavLink>
+
+          <NavLink
+            to="/payments"
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
+                isActive
+                  ? 'bg-green-50 text-green-600 shadow-sm'
+                  : 'text-light-text-secondary hover:bg-slate-100 hover:text-light-text-primary'
+              }`
+            }
+          >
+            <Banknote size={20} />
+            <span>Pagos y Recaudos</span>
           </NavLink>
 
           <NavLink

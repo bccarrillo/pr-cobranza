@@ -6,6 +6,7 @@ use App\Http\Controllers\ImportController;
 use App\Http\Controllers\DebtorController;
 use App\Http\Controllers\InteractionController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PaymentController;
 
 use App\Http\Controllers\AIToolController;
 
@@ -26,11 +27,16 @@ Route::prefix('v1')->group(function () {
 
     Route::post('/imports', [ImportController::class, 'store']);
     
+    Route::get('/payments/export', [PaymentController::class, 'export']);
+    Route::get('/payments', [PaymentController::class, 'index']);
+    
     Route::get('/debtors/export', [DebtorController::class, 'export']);
     Route::get('/debtors', [DebtorController::class, 'index']);
     Route::post('/debtors', [DebtorController::class, 'store']);
     Route::get('/debtors/search', [DebtorController::class, 'search']);
     Route::get('/debtors/{id}', [DebtorController::class, 'show']);
+    Route::get('/debtors/{id}/payments', [DebtorController::class, 'getPayments']);
+    Route::post('/debtors/{id}/payments', [DebtorController::class, 'payment']);
     Route::patch('/debtors/{id}/status', [DebtorController::class, 'status']);
 });
 
@@ -42,6 +48,7 @@ Route::prefix('ai')->middleware('auth:sanctum')->group(function () {
     
     // Herramientas Existentes Compartidas
     Route::get('/debtors/{id}', [DebtorController::class, 'show']);
+    Route::get('/debtors/{id}/payments', [DebtorController::class, 'getPayments']);
     Route::post('/debtors/{id}/payments', [DebtorController::class, 'payment']);
     Route::post('/debtors/{id}/interactions', [InteractionController::class, 'store']);
     Route::post('/notifications/email', [NotificationController::class, 'sendEmail']);
