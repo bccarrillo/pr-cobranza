@@ -88,5 +88,6 @@ Route::prefix('ai')->middleware('auth:sanctum')->group(function () {
     Route::post('/debtors/{id}/payments', [DebtorController::class, 'payment']);
     Route::patch('/debtors/{id}/status', [DebtorController::class, 'updateStatus']);
     Route::post('/debtors/{id}/interactions', [InteractionController::class, 'store']);
+    Route::post('/debtors/{id}/chat', [AIToolController::class, 'sendChatMessage']);
     Route::post('/notifications/email', [NotificationController::class, 'sendEmail']);
 });

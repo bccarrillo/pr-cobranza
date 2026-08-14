@@ -87,6 +87,24 @@ const AIIntegration = () => {
             />
 
             <ApiCard 
+              method="GET"
+              colorClass="bg-blue-500"
+              endpoint="/api/ai/debtors/{id}/rules"
+              description="Obtiene las reglas dinámicas de negociación. Le indica a la IA el porcentaje máximo de descuento y número de cuotas permitidas según la mora del cliente."
+            />
+
+            <ApiCard 
+              method="POST"
+              colorClass="bg-green-500"
+              endpoint="/api/ai/debtors/{id}/payment-link"
+              description="Genera un enlace de pago (Stripe/MercadoPago). La IA puede solicitar la generación de un enlace para enviarlo al deudor durante el chat."
+              payload={{
+                amount: 50000,
+                description: "Pago parcial de deuda atrasada"
+              }}
+            />
+
+            <ApiCard 
               method="POST"
               colorClass="bg-green-500"
               endpoint="/api/ai/debtors/{id}/payments"
@@ -99,12 +117,23 @@ const AIIntegration = () => {
 
             <ApiCard 
               method="POST"
+              colorClass="bg-blue-400"
+              endpoint="/api/ai/debtors/{id}/chat"
+              description="Espejea el mensaje de la IA. La IA DEBE llamar esta ruta cada vez que le responde al deudor, para que los administradores humanos puedan leer sus mensajes en la Bitácora."
+              payload={{
+                message: "Hola, claro que podemos ayudarte. Te ofrezco un descuento del 10% si pagas hoy."
+              }}
+            />
+
+            <ApiCard 
+              method="POST"
               colorClass="bg-green-500"
               endpoint="/api/ai/debtors/{id}/interactions"
-              description="Guarda el registro (log) de la conversación. La IA DEBE llamar a este endpoint al finalizar cada chat o llamada para dejar constancia humana."
+              description="Guarda el registro (log) de la conversación. La IA DEBE llamar a este endpoint al finalizar cada chat o llamada para dejar constancia humana en el CRM."
               payload={{
-                summary: "El cliente solicitó descuento, se negoció pago completo para la quincena.",
-                sentiment: "positivo"
+                type: "Chatbot",
+                notes: "El cliente solicitó descuento, se negoció pago completo para la quincena.",
+                promise_date: "2026-08-15"
               }}
             />
             

@@ -1,0 +1,228 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "PR Cobranza AI Tools API",
+    "description": "API tools for external AI Agents to interact with the Debt Collection CRM.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://pr-cobranza.nation-ai.tech/api/ai"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/debtors/{id}/rules": {
+      "get": {
+        "summary": "Obtener reglas de negociación",
+        "description": "Devuelve las reglas de negocio, descuentos máximos permitidos y cuotas autorizadas para un deudor en base a sus días de mora.",
+        "operationId": "getNegotiationRules",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID del deudor",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reglas obtenidas exitosamente"
+          }
+        }
+      }
+    },
+    "/debtors/{id}/payment-link": {
+      "post": {
+        "summary": "Generar enlace de pago",
+        "description": "Genera un enlace de pago único (ej. Stripe/MercadoPago) por un monto específico acordado en la negociación.",
+        "operationId": "generatePaymentLink",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "number",
+                    "description": "Monto a cobrar"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Concepto del pago"
+                  }
+                },
+                "required": ["amount"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Link generado"
+          }
+        }
+      }
+    },
+    "/debtors/{id}/chat": {
+      "post": {
+        "summary": "Espejear mensaje de la IA al Dashboard",
+        "description": "Envía la respuesta generada por la IA a la base de datos de PR Cobranza para que el administrador humano pueda leerla en la Bitácora.",
+        "operationId": "syncChatMessage",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "description": "El mensaje textual que la IA acaba de decirle al cliente."
+                  }
+                },
+                "required": ["message"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Mensaje sincronizado"
+          },
+          "403": {
+            "description": "Bot pausado por un humano"
+          }
+        }
+      }
+    },
+    "/debtors/{id}/interactions": {
+      "post": {
+        "summary": "Registrar resumen final en el CRM",
+        "description": "Guarda el resumen ejecutivo (Interaction Log) en el perfil del cliente una vez que la negociación ha concluido.",
+        "operationId": "saveInteractionSummary",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["Llamada", "WhatsApp", "Email", "SMS", "Chatbot"],
+                    "description": "Canal usado"
+                  },
+                  "notes": {
+                    "type": "string",
+                    "description": "Resumen ejecutivo de la negociación."
+                  },
+                  "promise_date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Si hubo promesa de pago, indicar la fecha"
+                  },
+                  "promise_amount": {
+                    "type": "number",
+                    "description": "Monto prometido"
+                  }
+                },
+                "required": ["type", "notes"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Interacción registrada"
+          }
+        }
+      }
+    },
+    "/debtors/{id}/status": {
+      "patch": {
+        "summary": "Actualizar estatus del deudor",
+        "description": "Cambia el estado del deudor en el CRM (ej. a 'Promesa de Pago', 'Ilocalizable').",
+        "operationId": "updateDebtorStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "description": "Nuevo estado (ej. 'promesa_pago')"
+                  }
+                },
+                "required": ["status"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Estatus actualizado"
+          }
+        }
+      }
+    }
+  }
+}

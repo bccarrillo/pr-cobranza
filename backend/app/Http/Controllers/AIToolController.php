@@ -71,4 +71,35 @@ class AIToolController extends Controller
             'message' => 'Enlace generado exitosamente. Envíalo al deudor.'
         ]);
     }
+    /**
+     * AI Tool: El agente de IA responde al chat
+     */
+    public function sendChatMessage(Request $request, $id)
+    {
+        $request->validate([
+            'message' => 'required|string',
+        ]);
+
+        $debtor = Debtor::findOrFail($id);
+
+        // Si el bot está pausado (un humano tomó el control), la IA no debería estar enviando mensajes,
+        // pero por si acaso, podemos rechazar la petición o aceptarla pero advertir.
+        if ($debtor->bot_paused) {
+            return response()->json([
+                'error' => 'Bot is currently paused by a human agent.',
+                'bot_paused' => true
+            ], 403);
+        }
+
+        $message = $debtor->chatMessages()->create([
+            'sender' => 'bot',
+            'message' => $request->message
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Chat message saved successfully.',
+            'data' => $message
+        ]);
+    }
 }
