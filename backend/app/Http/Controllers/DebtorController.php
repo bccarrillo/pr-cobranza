@@ -47,6 +47,30 @@ class DebtorController extends Controller
         return response()->json($debtor, 201);
     }
 
+    public function update(Request $request, string $id)
+    {
+        $request->validate([
+            'identification' => 'required|string',
+            'full_name' => 'required|string',
+            'total_debt' => 'required|numeric',
+            'email' => 'nullable|email',
+            'phone' => 'nullable|string',
+            'due_date' => 'nullable|date'
+        ]);
+
+        $debtor = Debtor::findOrFail($id);
+        $debtor->update([
+            'identification' => $request->identification,
+            'full_name' => $request->full_name,
+            'total_debt' => $request->total_debt,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'due_date' => $request->due_date ?? $debtor->due_date
+        ]);
+
+        return response()->json($debtor);
+    }
+
     public function export(Request $request)
     {
         $tenantId = $request->query('tenant_id');

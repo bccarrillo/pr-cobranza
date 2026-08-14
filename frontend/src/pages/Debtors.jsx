@@ -173,7 +173,9 @@ const Debtors = () => {
               <tr>
                 <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Cliente</th>
                 <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Identificación</th>
-                <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Deuda Total</th>
+                <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Saldo Actual</th>
+                <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Correo</th>
+                <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Fecha Venc.</th>
                 <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Días Mora</th>
                 <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Estado</th>
                 <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200 text-right">Acciones</th>
@@ -182,19 +184,19 @@ const Debtors = () => {
             <tbody className="divide-y divide-slate-100">
               {!selectedTenantId ? (
                 <tr>
-                  <td colSpan="6" className="py-8 text-center text-slate-400">Por favor seleccione una empresa para ver sus deudores.</td>
+                  <td colSpan="8" className="py-8 text-center text-slate-400">Por favor seleccione una empresa para ver sus deudores.</td>
                 </tr>
               ) : loading ? (
                 <tr>
-                  <td colSpan="6" className="py-8 text-center text-slate-400">Cargando datos...</td>
+                  <td colSpan="8" className="py-8 text-center text-slate-400">Cargando datos...</td>
                 </tr>
               ) : error ? (
                 <tr>
-                  <td colSpan="6" className="py-8 text-center text-red-400">{error}</td>
+                  <td colSpan="8" className="py-8 text-center text-red-400">{error}</td>
                 </tr>
               ) : displayedDebtors.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="py-8 text-center text-slate-400">No hay deudores que coincidan con la búsqueda.</td>
+                  <td colSpan="8" className="py-8 text-center text-slate-400">No hay deudores que coincidan con la búsqueda.</td>
                 </tr>
               ) : displayedDebtors.map((d) => (
                 <tr key={d.id} className={`transition-colors group ${d.status === 'requires_human' ? 'bg-red-50/30 hover:bg-red-50/60' : 'hover:bg-slate-50/50'}`}>
@@ -204,6 +206,12 @@ const Debtors = () => {
                   <td className="py-4 px-6 text-sm text-light-text-secondary">{d.identification}</td>
                   <td className="py-4 px-6 font-semibold text-light-text-primary">
                     ${parseFloat(d.current_balance || d.total_debt).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  </td>
+                  <td className="py-4 px-6 text-sm text-light-text-secondary">
+                    {d.email || <span className="text-slate-300 italic">Sin correo</span>}
+                  </td>
+                  <td className="py-4 px-6 text-sm text-light-text-secondary">
+                    {d.due_date ? d.due_date.substring(0, 10) : <span className="text-slate-300 italic">Sin fecha</span>}
                   </td>
                   <td className="py-4 px-6">
                     <span className={`text-sm font-medium ${d.days_overdue > 30 ? 'text-red-500' : 'text-slate-600'}`}>
@@ -235,7 +243,14 @@ const Debtors = () => {
                       >
                         <Receipt size={18} />
                       </button>
-                      <button className="p-1 text-slate-400 hover:text-light-blue transition-colors">
+                      <button 
+                        onClick={() => {
+                          setSelectedDebtor(d);
+                          setIsDebtorModalOpen(true);
+                        }}
+                        className="p-1 text-slate-400 hover:text-blue-500 transition-colors"
+                        title="Editar Registro"
+                      >
                         <MoreHorizontal size={18} />
                       </button>
                     </div>
@@ -259,14 +274,19 @@ const Debtors = () => {
         }}
       />
 
-      {/* Nuevo Caso Modal */}
+      {/* Nuevo/Editar Caso Modal */}
       <DebtorModal 
         isOpen={isDebtorModalOpen}
-        onClose={() => setIsDebtorModalOpen(false)}
+        onClose={() => {
+          setIsDebtorModalOpen(false);
+          setSelectedDebtor(null);
+        }}
         tenantId={selectedTenantId}
+        debtorToEdit={selectedDebtor}
         onSuccess={() => {
           setIsDebtorModalOpen(false);
-          fetchDebtors(); // Reload table data after new case
+          setSelectedDebtor(null);
+          fetchDebtors(); // Reload table data
         }}
       />
 
