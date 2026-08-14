@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { LayoutDashboard, Users, Settings, LogOut, Building2, UserCircle, UploadCloud, Bot, Banknote, Megaphone, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Users, Settings, LogOut, Building2, UserCircle, UploadCloud, Bot, Banknote, Megaphone, Menu, X, MessageSquare } from 'lucide-react';
 
 const Layout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -122,6 +122,21 @@ const Layout = () => {
           >
             <Megaphone size={20} />
             <span>Automatizaciones</span>
+          </NavLink>
+
+          <NavLink
+            to="/inbox"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
+                isActive
+                  ? 'bg-purple-50 text-purple-600 shadow-sm'
+                  : 'text-light-text-secondary hover:bg-slate-100 hover:text-light-text-primary'
+              }`
+            }
+          >
+            <MessageSquare size={20} />
+            <span>Bitácora IA</span>
           </NavLink>
 
           <NavLink

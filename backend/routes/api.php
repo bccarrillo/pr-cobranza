@@ -44,6 +44,29 @@ Route::prefix('v1')->group(function () {
     Route::get('/debtors/{id}', [DebtorController::class, 'show']);
     Route::put('/debtors/{id}', [DebtorController::class, 'update']);
     Route::get('/debtors/search', [DebtorController::class, 'search']);
+    Route::post('/chat/messages/{debtorId}', function (Illuminate\Http\Request $request, $debtorId) {
+        $request->validate(['message' => 'required|string']);
+        $debtor = App\Models\Debtor::findOrFail($debtorId);
+        
+        $message = $debtor->chatMessages()->create([
+            'sender' => 'user',
+            'message' => $request->message
+        ]);
+        
+        // MVP: The AI agent should pick this up, but we just return success.
+        return response()->json(['success' => true, 'data' => $message]);
+    });
+    
+    // AI Integration routes
+    Route::get('/ai-integrations', [AIIntegrationController::class, 'index']);
+    Route::put('/ai-integrations/{id}', [AIIntegrationController::class, 'update']);
+    Route::post('/ai-integrations/test', [AIIntegrationController::class, 'testConnection']);
+
+    // Inbox / HITL Routes
+    Route::get('/inbox/debtors', [App\Http\Controllers\InboxController::class, 'getDebtors']);
+    Route::get('/inbox/debtors/{id}/messages', [App\Http\Controllers\InboxController::class, 'getMessages']);
+    Route::post('/inbox/debtors/{id}/messages', [App\Http\Controllers\InboxController::class, 'sendMessage']);
+    Route::post('/inbox/debtors/{id}/toggle-bot', [App\Http\Controllers\InboxController::class, 'toggleBot']);
     Route::patch('/debtors/{id}/status', [DebtorController::class, 'updateStatus']);
     Route::get('/debtors/{id}/payments', [DebtorController::class, 'getPayments']);
     Route::post('/debtors/{id}/payments', [DebtorController::class, 'payment']);

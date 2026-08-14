@@ -54,32 +54,35 @@ const ChatPortal = () => {
   }, [messages, isTyping, isChatOpen]);
 
   const handleSend = async (e) => {
-    e.preventDefault();
+    e?.preventDefault();
     if (!inputValue.trim()) return;
 
-    const userText = inputValue;
-    const newMessage = {
+    const userMessage = {
       id: Date.now(),
-      sender: 'user',
-      text: userText,
-      time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+      text: inputValue,
+      isBot: false,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
-    setMessages(prev => [...prev, newMessage]);
+    setMessages(prev => [...prev, userMessage]);
     setInputValue('');
     setIsTyping(true);
 
-    // TODO: Here we will connect to the AI Orchestrator API
-    // For now, simulate a response
-    setTimeout(() => {
+    try {
+      // Send message to backend
+      await axios.post(`/api/v1/chat/messages/${id}`, { message: userMessage.text });
+      
+      // We do NOT simulate a response here if the AI agent is supposed to do it.
+      // But for the MVP, let's just leave it waiting or we can simulate a delay.
+      // Let's just turn off typing for now, since the actual AI integration will be done via WebSockets or polling later.
+      setTimeout(() => {
+        setIsTyping(false);
+      }, 1000);
+      
+    } catch (error) {
+      console.error("Error sending message:", error);
       setIsTyping(false);
-      setMessages(prev => [...prev, {
-        id: Date.now() + 1,
-        sender: 'bot',
-        text: 'En este momento nuestro motor de Inteligencia Artificial está siendo integrado. Pronto podré procesar tu solicitud y ofrecerte acuerdos de pago dinámicos.',
-        time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-      }]);
-    }, 1500);
+    }
   };
 
   if (loading) {

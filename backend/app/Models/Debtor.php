@@ -17,6 +17,9 @@ class Debtor extends Model
         'total_debt' => 'decimal:2',
         'current_balance' => 'decimal:2',
         'due_date' => 'date',
+        'bot_paused' => 'boolean',
+        'requires_human' => 'boolean',
+        'metadata' => 'array',
     ];
 
     public function tenant()
@@ -32,5 +35,10 @@ class Debtor extends Model
     public function interactionLogs()
     {
         return $this->hasMany(InteractionLog::class);
+    }
+
+    public function chatMessages()
+    {
+        return $this->hasMany(ChatMessage::class);
     }
 }

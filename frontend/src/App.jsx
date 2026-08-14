@@ -10,6 +10,7 @@ import Payments from './pages/Payments';
 import Campaigns from './pages/Campaigns';
 import Settings from './pages/Settings';
 import ChatPortal from './pages/ChatPortal';
+import Inbox from './pages/Inbox';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="campaigns" element={<Campaigns />} />
           <Route path="tenants" element={<Tenants />} />
           <Route path="users" element={<Users />} />
+          <Route path="inbox" element={<Inbox />} />
           <Route path="settings" element={<Settings />} />
           <Route path="ai-integration" element={<AIIntegration />} />
         </Route>
