@@ -27,15 +27,20 @@ class CampaignMailable extends Mailable
         $this->debtor = $debtor;
         $this->campaign = $campaign;
         
+        $frontendUrl = env('FRONTEND_URL', 'http://localhost:5173');
+        $magicLink = $frontendUrl . '/portal/' . $debtor->id;
+
         // Parse dynamic variables
         $this->parsedMessage = str_replace(
             [
                 '{nombre}', '{deuda}', 
-                '[Nombre del Cliente]', '[Monto de la Deuda]', '[Fecha de Vencimiento]'
+                '[Nombre del Cliente]', '[Monto de la Deuda]', '[Fecha de Vencimiento]',
+                '[https://URL_DE_TU_LANDING_PAGE_AQUI]', 'https://url_de_tu_landing_page_aqui/'
             ],
             [
                 $debtor->full_name, '$' . number_format($debtor->current_balance, 2),
-                $debtor->full_name, number_format($debtor->current_balance, 2), $debtor->due_date
+                $debtor->full_name, number_format($debtor->current_balance, 2), $debtor->due_date,
+                $magicLink, $magicLink
             ],
             $campaign->message_template
         );

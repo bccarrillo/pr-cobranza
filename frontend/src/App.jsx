@@ -9,11 +9,16 @@ import AIIntegration from './pages/AIIntegration';
 import Payments from './pages/Payments';
 import Campaigns from './pages/Campaigns';
 import Settings from './pages/Settings';
+import ChatPortal from './pages/ChatPortal';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Rutas Públicas */}
+        <Route path="/portal/:id" element={<ChatPortal />} />
+        
+        {/* Rutas Privadas / Admin */}
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="debtors" element={<Debtors />} />
