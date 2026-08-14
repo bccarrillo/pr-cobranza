@@ -29,8 +29,14 @@ class CampaignMailable extends Mailable
         
         // Parse dynamic variables
         $this->parsedMessage = str_replace(
-            ['{nombre}', '{deuda}'],
-            [$debtor->full_name, '$' . number_format($debtor->current_balance, 2)],
+            [
+                '{nombre}', '{deuda}', 
+                '[Nombre del Cliente]', '[Monto de la Deuda]', '[Fecha de Vencimiento]'
+            ],
+            [
+                $debtor->full_name, '$' . number_format($debtor->current_balance, 2),
+                $debtor->full_name, number_format($debtor->current_balance, 2), $debtor->due_date
+            ],
             $campaign->message_template
         );
     }
@@ -51,7 +57,7 @@ class CampaignMailable extends Mailable
     public function content(): Content
     {
         return new Content(
-            htmlString: nl2br(e($this->parsedMessage))
+            htmlString: $this->parsedMessage
         );
     }
 
