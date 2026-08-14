@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Jobs\SendNotificationEmailJob;
+use Illuminate\Support\Facades\Mail;
 
 class NotificationController extends Controller
 {
@@ -33,5 +34,26 @@ class NotificationController extends Controller
         SendNotificationEmailJob::dispatch($validated['email'], $validated['subject'], $invoiceData);
 
         return response()->json(['message' => 'Email notification queued successfully']);
+    }
+
+    /**
+     * Test SMTP configuration by sending a raw email.
+     */
+    public function testEmail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        try {
+            Mail::raw('¡Felicidades! Este es un mensaje de prueba desde PR Cobranza. Si estás leyendo esto, significa que tu servidor SMTP está configurado correctamente y listo para enviar correos de campañas.', function ($message) use ($request) {
+                $message->to($request->email)
+                        ->subject('Prueba SMTP Exitosa - PR Cobranza');
+            });
+
+            return response()->json(['message' => 'Correo de prueba enviado con éxito a ' . $request->email]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error SMTP: ' . $e->getMessage()], 500);
+        }
     }
 }

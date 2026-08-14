@@ -46,6 +46,9 @@ Route::prefix('v1')->group(function () {
     Route::get('/debtors/{id}/payments', [DebtorController::class, 'getPayments']);
     Route::post('/debtors/{id}/payments', [DebtorController::class, 'payment']);
     Route::get('/debtors/{id}/interactions', [InteractionController::class, 'index']);
+
+    // Configuración
+    Route::post('/settings/test-email', [NotificationController::class, 'testEmail']);
 });
 
 // Rutas de Herramientas de Inteligencia Artificial (M2M API)

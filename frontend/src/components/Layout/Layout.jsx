@@ -125,6 +125,21 @@ const Layout = () => {
           </NavLink>
 
           <NavLink
+            to="/settings"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
+                isActive
+                  ? 'bg-slate-200 text-slate-800 shadow-sm'
+                  : 'text-light-text-secondary hover:bg-slate-100 hover:text-light-text-primary'
+              }`
+            }
+          >
+            <Settings size={20} />
+            <span>Configuración</span>
+          </NavLink>
+
+          <NavLink
             to="/ai-integration"
             onClick={() => setIsMobileMenuOpen(false)}
             className={({ isActive }) =>
