@@ -27,7 +27,8 @@ class CampaignMailable extends Mailable
         $this->debtor = $debtor;
         $this->campaign = $campaign;
         
-        $frontendUrl = env('FRONTEND_URL', 'http://localhost:5173');
+        // El FRONTEND_URL se puede configurar en el .env, si no existe usa la de producción
+        $frontendUrl = env('FRONTEND_URL', 'https://pr-cobranza.nation-ai.tech');
         $magicLink = $frontendUrl . '/portal/' . $debtor->id;
 
         // Parse dynamic variables
@@ -35,12 +36,14 @@ class CampaignMailable extends Mailable
             [
                 '{nombre}', '{deuda}', 
                 '[Nombre del Cliente]', '[Monto de la Deuda]', '[Fecha de Vencimiento]',
-                '[https://URL_DE_TU_LANDING_PAGE_AQUI]', 'https://url_de_tu_landing_page_aqui/'
+                '[https://URL_DE_TU_LANDING_PAGE_AQUI]', 'https://url_de_tu_landing_page_aqui/',
+                '[Enlace al Asistente]'
             ],
             [
                 $debtor->full_name, '$' . number_format($debtor->current_balance, 2),
                 $debtor->full_name, number_format($debtor->current_balance, 2), $debtor->due_date,
-                $magicLink, $magicLink
+                $magicLink, $magicLink,
+                $magicLink
             ],
             $campaign->message_template
         );

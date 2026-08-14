@@ -141,7 +141,13 @@ const CampaignModal = ({ isOpen, onClose, tenantId, onSuccess, campaignToEdit })
               className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 text-slate-700 resize-none"
               placeholder="Hola {nombre}, te recordamos que tu cuota vence pronto..."
             />
-            <p className="text-xs text-slate-500 mt-1">Puedes usar variables dinámicas que serán reemplazadas por la IA.</p>
+            <p className="text-xs text-slate-500 mt-2 font-medium">Variables dinámicas soportadas:</p>
+            <div className="flex flex-wrap gap-2 mt-1">
+              <span className="text-[10px] bg-purple-50 text-purple-700 px-2 py-1 rounded-md font-mono border border-purple-100">[Nombre del Cliente]</span>
+              <span className="text-[10px] bg-purple-50 text-purple-700 px-2 py-1 rounded-md font-mono border border-purple-100">[Monto de la Deuda]</span>
+              <span className="text-[10px] bg-purple-50 text-purple-700 px-2 py-1 rounded-md font-mono border border-purple-100">[Fecha de Vencimiento]</span>
+              <span className="text-[10px] bg-blue-50 text-blue-700 px-2 py-1 rounded-md font-mono border border-blue-100">[Enlace al Asistente]</span>
+            </div>
           </div>
           
           <label className="flex items-center gap-3 cursor-pointer mt-2 p-3 bg-slate-50 rounded-xl border border-slate-100">
