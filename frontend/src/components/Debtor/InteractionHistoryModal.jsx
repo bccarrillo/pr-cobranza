@@ -12,7 +12,8 @@ const InteractionHistoryModal = ({ debtor, onClose }) => {
 
   const fetchInteractions = async () => {
     try {
-      const response = await fetch(`/api/v1/debtors/${debtor.id}/interactions`);
+      const baseUrl = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${baseUrl}/api/v1/debtors/${debtor.id}/interactions`);
       if (!response.ok) throw new Error('Error al cargar historial de interacciones');
       const data = await response.json();
       setInteractions(data);
