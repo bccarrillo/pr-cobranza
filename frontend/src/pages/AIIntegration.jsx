@@ -131,9 +131,9 @@ const AIIntegration = () => {
               endpoint="/api/ai/debtors/{id}/interactions"
               description="Guarda el registro (log) de la conversación. La IA DEBE llamar a este endpoint al finalizar cada chat o llamada para dejar constancia humana en el CRM."
               payload={{
-                type: "Chatbot",
-                notes: "El cliente solicitó descuento, se negoció pago completo para la quincena.",
-                promise_date: "2026-08-15"
+                channel: "Chatbot",
+                outcome: "Acuerdo de pago alcanzado",
+                summary: "El cliente solicitó descuento, se negoció pago completo para la quincena."
               }}
             />
             
@@ -143,8 +143,9 @@ const AIIntegration = () => {
               endpoint="/api/ai/notifications/email"
               description="Envía notificaciones de correo. Si el canal principal falla, la IA puede pedirle al sistema que envíe un correo oficial."
               payload={{
-                debtor_id: 123,
-                template: "payment_reminder"
+                email: "cliente@ejemplo.com",
+                subject: "Acuerdo de Pago - PR Cobranza",
+                message: "Estimado cliente, adjuntamos los detalles de su acuerdo."
               }}
             />
           </section>

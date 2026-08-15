@@ -159,26 +159,25 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "type": {
+                  "channel": {
                     "type": "string",
                     "enum": ["Llamada", "WhatsApp", "Email", "SMS", "Chatbot"],
                     "description": "Canal usado"
                   },
-                  "notes": {
+                  "outcome": {
                     "type": "string",
-                    "description": "Resumen ejecutivo de la negociación."
+                    "description": "Resultado de la negociación (Ej: 'Acuerdo', 'Negativa', 'Renuente')"
                   },
-                  "promise_date": {
+                  "summary": {
                     "type": "string",
-                    "format": "date",
-                    "description": "Si hubo promesa de pago, indicar la fecha"
+                    "description": "Resumen ejecutivo opcional"
                   },
-                  "promise_amount": {
-                    "type": "number",
-                    "description": "Monto prometido"
+                  "metadata": {
+                    "type": "object",
+                    "description": "Datos extra opcionales"
                   }
                 },
-                "required": ["type", "notes"]
+                "required": ["channel", "outcome"]
               }
             }
           }
@@ -225,6 +224,49 @@
         "responses": {
           "200": {
             "description": "Estatus actualizado"
+          }
+        }
+      }
+    },
+    "/notifications/email": {
+      "post": {
+        "summary": "Enviar correo de notificación",
+        "description": "Envía un correo oficial con el resumen de la negociación o un recibo.",
+        "operationId": "sendEmail",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Correo destinatario"
+                  },
+                  "subject": {
+                    "type": "string",
+                    "description": "Asunto del correo"
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "Mensaje principal"
+                  },
+                  "debtor_name": {
+                    "type": "string"
+                  },
+                  "amount": {
+                    "type": "number"
+                  }
+                },
+                "required": ["email", "subject", "message"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Correo enviado"
           }
         }
       }
