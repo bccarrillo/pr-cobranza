@@ -59,6 +59,7 @@ class AIToolController extends Controller
         $debtor = Debtor::findOrFail($id);
 
         // Simulamos la generación de un link de Stripe o MercadoPago
+        // NOTA: Este código fue forzado a actualizarse para limpiar el OPCache del VPS.
         $paymentId = uniqid('pay_');
         $amount = $request->input('amount');
         
@@ -66,7 +67,7 @@ class AIToolController extends Controller
             'payment_id' => $paymentId,
             'debtor_id' => $debtor->id,
             'amount' => $amount,
-            'payment_url' => "https://checkout.pr-cobranza.com/pay/{$paymentId}?amount={$amount}",
+            'payment_url' => "https://pr-cobranza.nation-ai.tech/checkout/{$paymentId}?amount={$amount}&debtor_id={$debtor->id}",
             'expires_at' => now()->addHours(24)->toDateTimeString(),
             'message' => 'Enlace generado exitosamente. Envíalo al deudor.'
         ]);

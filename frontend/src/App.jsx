@@ -11,6 +11,7 @@ import Campaigns from './pages/Campaigns';
 import Settings from './pages/Settings';
 import ChatPortal from './pages/ChatPortal';
 import Inbox from './pages/Inbox';
+import Checkout from './pages/Checkout';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Routes>
         {/* Rutas Públicas */}
         <Route path="/portal/:id" element={<ChatPortal />} />
+        <Route path="/checkout/:paymentId" element={<Checkout />} />
         
         {/* Rutas Privadas / Admin */}
         <Route path="/" element={<Layout />}>
