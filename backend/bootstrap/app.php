@@ -12,15 +12,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
-    })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e, \Illuminate\Http\Request $request) {
+        $middleware->redirectGuestsTo(function (\Illuminate\Http\Request $request) {
             if ($request->is('api/*')) {
-                return response()->json([
+                abort(response()->json([
                     'error' => 'Unauthenticated.',
                     'message' => 'Falta o es inválido el Bearer Token en la cabecera Authorization.'
-                ], 401);
+                ], 401));
             }
+            return '/';
         });
+    })
+    ->withExceptions(function (Exceptions $exceptions): void {
+        //
     })->create();
