@@ -7,7 +7,12 @@
   },
   "servers": [
     {
-      "url": "https://pr-cobranza.nation-ai.tech/api/ai"
+      "url": "http://127.0.0.1:8081/api/ai",
+      "description": "Entorno Local (Desarrollo)"
+    },
+    {
+      "url": "https://pr-cobranza.nation-ai.tech/api/ai",
+      "description": "Servidor de Producción"
     }
   ],
   "components": {
