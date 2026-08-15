@@ -4,6 +4,34 @@ Este documento mantiene un registro histórico de las funcionalidades implementa
 
 ---
 
+## [1.4.0] - Integración de IA (Tools API) y Pasarela de Pagos
+**Fecha:** 15 de Agosto de 2026
+
+### 🚀 Nuevas Funcionalidades
+- **APIs M2M (Machine-to-Machine) para Agentes IA:**
+  - Creación de rutas dedicadas bajo `/api/ai/*` protegidas por Sanctum Bearer Tokens.
+  - Generación de herramientas (Functions) clave para la IA:
+    - `GET /rules`: Retorna el límite de descuento dinámico.
+    - `POST /payment-link`: Genera URLs para pagar en línea.
+    - `POST /chat`: Espejea los mensajes del bot hacia la base de datos (Bitácora).
+    - `POST /interactions`: Registra acuerdos oficiales tras el fin de una conversación.
+- **Pasarela de Pagos (Checkout):**
+  - Creación del componente público `Checkout.jsx` en React que lee los parámetros `paymentId`, `amount` y `debtor_id` de la URL.
+  - Interfaz premium, responsive y segura que simula la pasarela de pagos, incluyendo una simulación de latencia de red.
+  - Funcionalidad *End-to-End*: Al confirmar, dispara una petición a `POST /api/v1/debtors/{id}/payments`, reflejando instantáneamente el dinero en el saldo deudor del CRM y cerrando el ciclo exitosamente.
+- **Documentación Completa Swagger:**
+  - Actualización del archivo `docs/ai_tools_openapi.json` con los esquemas exactos (payloads correctos para `interactions` y `email`).
+  - Sincronización con `backend/public/ai_tools_openapi.json` para que el visor interactivo de Swagger UI sea 100% preciso.
+
+### 🐛 Corrección de Errores (Bug Fixes)
+- **JSON Forzado en Errores de Laravel (`bootstrap/app.php`):**
+  - **Problema:** Laravel respondía con código HTML en lugar de JSON al fallar validaciones (código 422) o carecer de Token en rutas `/api/*`, lo que causaba redirecciones fallidas y el temido error 500 por la ausencia de una ruta `login`.
+  - **Solución:** Se intervino profundamente en `bootstrap/app.php` para usar `$middleware->redirectGuestsTo()` y abortar inmediatamente devolviendo JSON con estatus `401 Unauthorized`. Además, se implementó `$exceptions->shouldRenderJsonWhen()` para forzar que cualquier otro error (como validaciones de campos `POST`/`PATCH`) siempre devuelva una respuesta JSON estructurada, facilitando a la IA la corrección automática de parámetros faltantes sin estrellarse contra un muro HTML.
+- **Corrección de Endpoints:**
+  - El ruteo de `PATCH /api/ai/debtors/{id}/status` fue corregido para apuntar correctamente al método `status()` (anteriormente llamado erróneamente `updateStatus`).
+
+---
+
 ## [1.3.0] - Automatización Híbrida y Campañas
 **Fecha:** 13 de Agosto de 2026
 
