@@ -57,10 +57,10 @@ Route::prefix('v1')->group(function () {
         return response()->json(['success' => true, 'data' => $message]);
     });
     
-    // AI Integration routes
-    Route::get('/ai-integrations', [AIIntegrationController::class, 'index']);
-    Route::put('/ai-integrations/{id}', [AIIntegrationController::class, 'update']);
-    Route::post('/ai-integrations/test', [AIIntegrationController::class, 'testConnection']);
+    // AI Integration routes (WIP - Not yet implemented in backend)
+    // Route::get('/ai-integrations', [App\Http\Controllers\AIIntegrationController::class, 'index']);
+    // Route::put('/ai-integrations/{id}', [App\Http\Controllers\AIIntegrationController::class, 'update']);
+    // Route::post('/ai-integrations/test', [App\Http\Controllers\AIIntegrationController::class, 'testConnection']);
 
     // Inbox / HITL Routes
     Route::get('/inbox/debtors', [App\Http\Controllers\InboxController::class, 'getDebtors']);
