@@ -35,10 +35,8 @@ class AIToolController extends Controller
     /**
      * AI Tool: Busca el ID interno de un deudor usando su token único de la URL
      */
-    public function searchDebtorByToken(Request $request)
+    public function searchDebtorByToken(Request $request, $token)
     {
-        $token = $request->query('token');
-        
         if (!$token) {
             return response()->json(['error' => 'El parámetro token es requerido'], 400);
         }
