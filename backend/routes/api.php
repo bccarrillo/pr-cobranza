@@ -81,7 +81,7 @@ Route::prefix('v1')->group(function () {
 Route::prefix('ai')->middleware('auth:sanctum')->group(function () {
     // Herramienta de Búsqueda (Se coloca arriba para no chocar con {id})
     Route::get('/debtors/search', [AIToolController::class, 'searchDebtor']);
-    Route::get('/debtors/token/{token?}', [AIToolController::class, 'searchDebtorByToken']);
+    Route::post('/debtors/token', [AIToolController::class, 'searchDebtorByToken']);
 
     // Herramientas Nuevas Específicas
     Route::get('/debtors/{id}/rules', [AIToolController::class, 'getRules']);

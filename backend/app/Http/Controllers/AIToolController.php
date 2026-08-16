@@ -33,14 +33,15 @@ class AIToolController extends Controller
     }
 
     /**
-     * AI Tool: Busca el ID interno de un deudor usando su token único de la URL o su correo
+     * AI Tool: Busca el ID interno de un deudor usando su token único o su correo (vía POST body)
      */
-    public function searchDebtorByToken(Request $request, $token = null)
+    public function searchDebtorByToken(Request $request)
     {
-        $email = $request->query('email');
+        $token = $request->input('token');
+        $email = $request->input('email');
 
         if (!$token && !$email) {
-            return response()->json(['error' => 'El parámetro token en la URL o el parámetro email en la consulta son requeridos'], 400);
+            return response()->json(['error' => 'Debe enviar el parámetro token o email en el body (JSON)'], 400);
         }
 
         $query = Debtor::query();
