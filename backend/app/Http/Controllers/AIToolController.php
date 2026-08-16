@@ -8,6 +8,31 @@ use App\Models\Debtor;
 class AIToolController extends Controller
 {
     /**
+     * AI Tool: Busca el ID interno de un deudor usando su número de identificación
+     */
+    public function searchDebtor(Request $request)
+    {
+        $identification = $request->query('identification');
+        
+        if (!$identification) {
+            return response()->json(['error' => 'El parámetro identification es requerido'], 400);
+        }
+
+        $debtor = Debtor::where('identification', $identification)->first();
+
+        if (!$debtor) {
+            return response()->json(['error' => 'No se encontró ningún deudor con esa identificación'], 404);
+        }
+
+        return response()->json([
+            'id' => $debtor->id,
+            'identification' => $debtor->identification,
+            'full_name' => $debtor->full_name,
+            'message' => 'Usa este ID (' . $debtor->id . ') para ejecutar las demás herramientas.'
+        ]);
+    }
+
+    /**
      * AI Tool: Obtiene las reglas de negociación permitidas para un deudor
      */
     public function getRules($id)

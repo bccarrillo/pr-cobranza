@@ -78,6 +78,9 @@ Route::prefix('v1')->group(function () {
 
 // Rutas de Herramientas de Inteligencia Artificial (M2M API)
 Route::prefix('ai')->middleware('auth:sanctum')->group(function () {
+    // Herramienta de Búsqueda (Se coloca arriba para no chocar con {id})
+    Route::get('/debtors/search', [AIToolController::class, 'searchDebtor']);
+
     // Herramientas Nuevas Específicas
     Route::get('/debtors/{id}/rules', [AIToolController::class, 'getRules']);
     Route::post('/debtors/{id}/payment-link', [AIToolController::class, 'generatePaymentLink']);
