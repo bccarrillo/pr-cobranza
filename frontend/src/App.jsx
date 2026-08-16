@@ -18,7 +18,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* Rutas Públicas */}
-        <Route path="/portal/:id" element={<ChatPortal />} />
+        <Route path="/portal/:token" element={<ChatPortal />} />
         <Route path="/checkout/:paymentId" element={<Checkout />} />
         
         {/* Rutas Privadas / Admin */}

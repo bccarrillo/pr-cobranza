@@ -135,6 +135,24 @@ class DebtorController extends Controller
         ]);
     }
 
+    public function getByToken(string $token)
+    {
+        $debtor = Debtor::where('d_token', $token)->firstOrFail();
+        
+        return response()->json([
+            'id' => $debtor->id,
+            'd_token' => $debtor->d_token,
+            'identification' => $debtor->identification,
+            'full_name' => $debtor->full_name,
+            'financials' => [
+                'total_debt' => $debtor->total_debt,
+                'current_balance' => $debtor->current_balance,
+            ],
+            'status' => $debtor->status,
+            'custom_details' => $debtor->extra_data,
+        ]);
+    }
+
     public function status(Request $request, string $id)
     {
         $request->validate([

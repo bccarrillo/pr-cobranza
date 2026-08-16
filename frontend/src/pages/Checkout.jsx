@@ -11,6 +11,7 @@ const Checkout = () => {
   const queryParams = new URLSearchParams(location.search);
   const amount = parseFloat(queryParams.get('amount')) || 0;
   const debtorId = queryParams.get('debtor_id');
+  const debtorToken = queryParams.get('debtor_token') || debtorId;
 
   const [status, setStatus] = useState('idle'); // idle, processing, success, error
   const [errorMessage, setErrorMessage] = useState('');
@@ -98,7 +99,7 @@ const Checkout = () => {
             </div>
           </div>
           <button
-            onClick={() => navigate(`/portal/${debtorId}`)}
+            onClick={() => navigate(`/portal/${debtorToken}`)}
             className="w-full bg-slate-900 text-white py-3 rounded-xl font-medium hover:bg-slate-800 transition-colors"
           >
             Volver al Portal

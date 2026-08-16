@@ -33,6 +33,32 @@ class AIToolController extends Controller
     }
 
     /**
+     * AI Tool: Busca el ID interno de un deudor usando su token único de la URL
+     */
+    public function searchDebtorByToken(Request $request)
+    {
+        $token = $request->query('token');
+        
+        if (!$token) {
+            return response()->json(['error' => 'El parámetro token es requerido'], 400);
+        }
+
+        $debtor = Debtor::where('d_token', $token)->first();
+
+        if (!$debtor) {
+            return response()->json(['error' => 'No se encontró ningún deudor con ese token'], 404);
+        }
+
+        return response()->json([
+            'id' => $debtor->id,
+            'd_token' => $debtor->d_token,
+            'identification' => $debtor->identification,
+            'full_name' => $debtor->full_name,
+            'message' => 'Usa este ID (' . $debtor->id . ') para ejecutar las demás herramientas.'
+        ]);
+    }
+
+    /**
      * AI Tool: Obtiene las reglas de negociación permitidas para un deudor
      */
     public function getRules($id)
@@ -92,7 +118,7 @@ class AIToolController extends Controller
             'payment_id' => $paymentId,
             'debtor_id' => $debtor->id,
             'amount' => $amount,
-            'payment_url' => "https://pr-cobranza.nation-ai.tech/checkout/{$paymentId}?amount={$amount}&debtor_id={$debtor->id}",
+            'payment_url' => "https://pr-cobranza.nation-ai.tech/checkout/{$paymentId}?amount={$amount}&debtor_id={$debtor->id}&debtor_token={$debtor->d_token}",
             'expires_at' => now()->addHours(24)->toDateTimeString(),
             'message' => 'Enlace generado exitosamente. Envíalo al deudor.'
         ]);

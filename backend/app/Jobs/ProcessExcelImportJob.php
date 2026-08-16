@@ -77,6 +77,7 @@ class ProcessExcelImportJob implements ShouldQueue
 
                         $debtorsData[] = [
                             'tenant_id' => $this->tenantId,
+                            'd_token' => strtoupper(Str::random(8)),
                             'identification' => (string) $identification,
                             'full_name' => $fullName,
                             'total_debt' => (float) $totalDebt,

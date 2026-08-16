@@ -22,6 +22,15 @@ class Debtor extends Model
         'metadata' => 'array',
     ];
 
+    public static function booted()
+    {
+        static::creating(function ($debtor) {
+            if (empty($debtor->d_token)) {
+                $debtor->d_token = strtoupper(\Illuminate\Support\Str::random(8));
+            }
+        });
+    }
+
     public function tenant()
     {
         return $this->belongsTo(Tenant::class);

@@ -29,7 +29,7 @@ class CampaignMailable extends Mailable
         
         // El FRONTEND_URL se puede configurar en el .env, si no existe usa la de producción
         $frontendUrl = env('FRONTEND_URL', 'https://pr-cobranza.nation-ai.tech');
-        $magicLink = $frontendUrl . '/portal/' . $debtor->id;
+        $magicLink = $frontendUrl . '/portal/' . $this->debtor->d_token;
 
         // Parse dynamic variables
         $this->parsedMessage = str_replace(

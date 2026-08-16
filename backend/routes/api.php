@@ -44,6 +44,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/debtors/{id}', [DebtorController::class, 'show']);
     Route::put('/debtors/{id}', [DebtorController::class, 'update']);
     Route::get('/debtors/search', [DebtorController::class, 'search']);
+    Route::get('/debtors/token/{token}', [DebtorController::class, 'getByToken']);
     Route::post('/chat/messages/{debtorId}', function (Illuminate\Http\Request $request, $debtorId) {
         $request->validate(['message' => 'required|string']);
         $debtor = App\Models\Debtor::findOrFail($debtorId);
@@ -80,6 +81,7 @@ Route::prefix('v1')->group(function () {
 Route::prefix('ai')->middleware('auth:sanctum')->group(function () {
     // Herramienta de Búsqueda (Se coloca arriba para no chocar con {id})
     Route::get('/debtors/search', [AIToolController::class, 'searchDebtor']);
+    Route::get('/debtors/token/{token}', [AIToolController::class, 'searchDebtorByToken']);
 
     // Herramientas Nuevas Específicas
     Route::get('/debtors/{id}/rules', [AIToolController::class, 'getRules']);

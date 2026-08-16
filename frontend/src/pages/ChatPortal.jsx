@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Shield, Loader2, AlertCircle, CheckCircle, Clock, CreditCard } from 'lucide-react';
 
 const ChatPortal = () => {
-  const { id } = useParams();
+  const { token } = useParams();
   const [debtor, setDebtor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,7 +13,7 @@ const ChatPortal = () => {
     // 1. Cargar datos del deudor para personalizar la Landing Page
     const fetchDebtor = async () => {
       try {
-        const response = await axios.get(`/api/v1/debtors/${id}`);
+        const response = await axios.get(`/api/v1/debtors/token/${token}`);
         setDebtor(response.data);
       } catch (err) {
         setError('No pudimos encontrar la información de tu cuenta. Por favor verifica el enlace.');
@@ -33,8 +33,8 @@ const ChatPortal = () => {
     script.setAttribute("data-title", "Asistente Virtual PR");
     script.setAttribute("data-color", "#3b82f6"); // Usamos el azul de nuestra marca
     script.setAttribute("data-welcome", "¡Hola! Estoy aquí para ayudarte a revisar tus opciones de pago. ¿En qué te puedo ayudar?");
-    // Inyectamos el ID como metadata por si la plataforma Lovable lo llega a leer
-    script.setAttribute("data-user-id", id);
+    // Inyectamos el token como metadata (la IA puede pedirlo y el usuario copiarlo, o Lovable puede pasarlo)
+    script.setAttribute("data-user-id", token);
     script.defer = true;
     
     document.body.appendChild(script);
@@ -44,7 +44,7 @@ const ChatPortal = () => {
       const existingScript = document.querySelector('script[src="https://sentient-canvas-pro.lovable.app/widget.js"]');
       if (existingScript) existingScript.remove();
     };
-  }, [id]);
+  }, [token]);
 
   if (loading) {
     return (
