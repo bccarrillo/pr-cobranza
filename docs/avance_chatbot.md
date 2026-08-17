@@ -16,24 +16,23 @@ Para evitar que los deudores deban crear cuentas o recordar contraseñas, se imp
 
 Se creó un portal público y seguro diseñado específicamente para dispositivos móviles (Mobile-First).
 
-- **Nueva Ruta:** `/portal/:id` (Registrada en `frontend/src/App.jsx`).
+- **Nueva Ruta:** `/portal/:token` (Registrada en `frontend/src/App.jsx`).
 - **Vista Principal (`ChatPortal.jsx`):** 
   - Diseño "Hero" amigable que invita a la negociación ("Te ayudamos a recuperar tu tranquilidad financiera").
   - Muestra tarjetas de beneficios para generar confianza (24/7, pagos seguros, sin intereses ocultos).
 - **El Widget Flotante:** 
   - El asistente virtual no ocupa toda la pantalla, sino que vive dentro de un elegante widget en la esquina inferior derecha.
-  - Al ingresar en PC, el chat se abre automáticamente. En celulares, inicia minimizado para permitir la lectura del portal, pero se abre instantáneamente al hacer clic.
-- **Componente de Mensajes (`ChatMessage.jsx`):** Componente aislado que maneja los estilos, la alineación y los colores (burbujas azules y blancas) para diferenciar al Bot del Usuario.
+  - Al ingresar, inyecta automáticamente el token seguro en los datos del widget para que la IA sepa quién es el usuario.
 
 ## 3. ¿Cómo se verá esto en tu VPS?
 
-Actualmente, estás probando en `http://localhost:5173/portal/1`. 
+Actualmente, estás probando en `http://localhost:5173/portal/ZSNZJDPD`. 
 
 Cuando subas esto a producción siguiendo tu `deployment_guide.md`, el enlace de producción que llegará a los correos de tus clientes será:
 
-👉 **`https://tudominio.com/portal/1`**
+👉 **`https://tudominio.com/portal/ZSNZJDPD`**
 
-*(Reemplazando `tudominio.com` por el dominio real que conectaste a tu VPS, y el `1` por el ID interno del deudor).*
+*(Reemplazando `tudominio.com` por el dominio real que conectaste a tu VPS, y `ZSNZJDPD` por el d_token del deudor).*
 
 ### Pasos para actualizar tu VPS con estos cambios:
 

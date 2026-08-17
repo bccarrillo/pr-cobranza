@@ -29,6 +29,41 @@
     }
   ],
   "paths": {
+    "/debtors/token": {
+      "post": {
+        "summary": "Buscar ID del deudor por Token o Correo",
+        "description": "Devuelve el ID interno del deudor basado en su token seguro o correo electrónico.",
+        "operationId": "searchDebtorByToken",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "description": "El token alfanumérico único (d_token) extraído de la URL."
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "El correo electrónico del deudor."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "ID del deudor obtenido"
+          },
+          "404": {
+            "description": "No se encontró ningún deudor"
+          }
+        }
+      }
+    },
     "/debtors/{id}/rules": {
       "get": {
         "summary": "Obtener reglas de negociación",

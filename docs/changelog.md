@@ -4,6 +4,19 @@ Este documento mantiene un registro histórico de las funcionalidades implementa
 
 ---
 
+## [1.5.0] - Implementación de Tokens Seguros (d_token)
+**Fecha:** 17 de Agosto de 2026
+
+### 🚀 Nuevas Funcionalidades
+- **Tokens Seguros en URLs (`d_token`):**
+  - Implementación de un token alfanumérico único de 8 caracteres para cada deudor en reemplazo del ID numérico secuencial en las URLs públicas (`/portal/{token}` en lugar de `/portal/{id}`).
+  - Incrementa la privacidad evitando que usuarios externos "adivinen" y visualicen información de otros deudores alterando el ID numérico.
+  - Generación automática del token en la base de datos (eventos del modelo) y soporte para migraciones de datos y cargas masivas (Excel Import Jobs).
+- **Herramienta de Búsqueda de IA Mejorada:**
+  - Creación del endpoint `POST /api/ai/debtors/token` que le permite al agente inteligente buscar automáticamente al deudor leyendo su `d_token` desde la metadata inyectada en el widget, o mediante un parámetro de contingencia enviando el `email` del cliente.
+
+---
+
 ## [1.4.0] - Integración de IA (Tools API) y Pasarela de Pagos
 **Fecha:** 15 de Agosto de 2026
 
