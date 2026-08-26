@@ -174,4 +174,62 @@ class AIToolController extends Controller
             'data' => $message
         ]);
     }
+
+    // ==========================================
+    // WRAPPERS PARA PLATAFORMAS DE IA (LOVABLE)
+    // ==========================================
+    // Estas funciones extraen el "id" directamente del Body (JSON) 
+    // en lugar de depender de que la IA modifique la URL.
+
+    public function getRulesBody(Request $request)
+    {
+        return $this->getRules($request->input('id'));
+    }
+
+    public function generatePaymentLinkBody(Request $request)
+    {
+        return $this->generatePaymentLink($request, $request->input('id'));
+    }
+
+    public function updateStatusBody(Request $request)
+    {
+        $request->validate([
+            'id' => 'required',
+            'status' => 'required|string'
+        ]);
+        
+        $debtor = Debtor::withoutGlobalScope('tenant_id')->findOrFail($request->input('id'));
+        $debtor->update(['status' => $request->input('status')]);
+        
+        return response()->json(['message' => 'Status updated successfully', 'debtor' => $debtor]);
+    }
+
+    public function saveInteractionBody(Request $request)
+    {
+        $request->validate([
+            'id' => 'required',
+            'channel' => 'required|string',
+            'outcome' => 'required|string',
+            'summary' => 'nullable|string'
+        ]);
+
+        $debtor = Debtor::withoutGlobalScope('tenant_id')->findOrFail($request->input('id'));
+        
+        $interaction = $debtor->interactionLogs()->create([
+            'channel' => $request->input('channel'),
+            'outcome' => $request->input('outcome'),
+            'summary' => $request->input('summary'),
+            'metadata' => $request->input('metadata', []),
+        ]);
+        
+        return response()->json([
+            'message' => 'Interaction logged successfully',
+            'interaction' => $interaction
+        ]);
+    }
+
+    public function sendChatMessageBody(Request $request)
+    {
+        return $this->sendChatMessage($request, $request->input('id'));
+    }
 }

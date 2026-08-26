@@ -89,11 +89,16 @@ Route::prefix('ai')->middleware('auth:sanctum')->group(function () {
     Route::get('/debtors/search', [AIToolController::class, 'searchDebtor']);
     Route::post('/debtors/token', [AIToolController::class, 'searchDebtorByToken']);
 
-    // Herramientas Nuevas Específicas
+    // Herramientas Nuevas Específicas (Usan POST para recibir el ID en el body en lugar de la URL)
+    Route::post('/rules', [AIToolController::class, 'getRulesBody']);
+    Route::post('/payment-link', [AIToolController::class, 'generatePaymentLinkBody']);
+    Route::post('/status', [AIToolController::class, 'updateStatusBody']);
+    Route::post('/interactions', [AIToolController::class, 'saveInteractionBody']);
+    Route::post('/chat', [AIToolController::class, 'sendChatMessageBody']);
+
+    // Herramientas Existentes Compartidas (Legacy con ID en la URL)
     Route::get('/debtors/{id}/rules', [AIToolController::class, 'getRules']);
     Route::post('/debtors/{id}/payment-link', [AIToolController::class, 'generatePaymentLink']);
-    
-    // Herramientas Existentes Compartidas
     Route::get('/debtors/{id}', [DebtorController::class, 'show']);
     Route::get('/debtors/{id}/payments', [DebtorController::class, 'getPayments']);
     Route::post('/debtors/{id}/payments', [DebtorController::class, 'payment']);
