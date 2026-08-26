@@ -21,9 +21,7 @@ const NegotiationRules = () => {
 
   const fetchTenants = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8081/api/v1/tenants', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
+      const response = await axios.get('/api/v1/tenants');
       setTenants(response.data);
       if (response.data.length > 0) {
         setSelectedTenantId(response.data[0].id);
@@ -37,10 +35,7 @@ const NegotiationRules = () => {
     if (!selectedTenantId) return;
     try {
       setIsLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`http://127.0.0.1:8081/api/v1/rules?tenant_id=${selectedTenantId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await axios.get(`/api/v1/rules?tenant_id=${selectedTenantId}`);
       setRules(response.data);
     } catch (error) {
       console.error('Error fetching rules', error);
@@ -67,17 +62,12 @@ const NegotiationRules = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
       const payload = { ...formData, tenant_id: selectedTenantId };
       
       if (editingRule) {
-        await axios.put(`http://127.0.0.1:8081/api/v1/rules/${editingRule.id}`, payload, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await axios.put(`/api/v1/rules/${editingRule.id}`, payload);
       } else {
-        await axios.post('http://127.0.0.1:8081/api/v1/rules', payload, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        await axios.post('/api/v1/rules', payload);
       }
       setIsModalOpen(false);
       fetchRules();
@@ -116,10 +106,7 @@ const NegotiationRules = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('¿Seguro que deseas eliminar esta regla?')) return;
     try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`http://127.0.0.1:8081/api/v1/rules/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await axios.delete(`/api/v1/rules/${id}`);
       fetchRules();
     } catch (error) {
       console.error('Error deleting rule', error);
