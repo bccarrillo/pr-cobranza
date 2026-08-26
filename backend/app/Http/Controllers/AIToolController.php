@@ -28,6 +28,9 @@ class AIToolController extends Controller
             'id' => $debtor->id,
             'identification' => $debtor->identification,
             'full_name' => $debtor->full_name,
+            'total_debt' => $debtor->total_debt,
+            'current_balance' => $debtor->current_balance,
+            'due_date' => $debtor->due_date ? $debtor->due_date->format('Y-m-d') : null,
             'message' => 'Usa este ID (' . $debtor->id . ') para ejecutar las demás herramientas.'
         ]);
     }
@@ -63,6 +66,9 @@ class AIToolController extends Controller
             'd_token' => $debtor->d_token,
             'identification' => $debtor->identification,
             'full_name' => $debtor->full_name,
+            'total_debt' => $debtor->total_debt,
+            'current_balance' => $debtor->current_balance,
+            'due_date' => $debtor->due_date ? $debtor->due_date->format('Y-m-d') : null,
             'message' => 'Usa este ID (' . $debtor->id . ') para ejecutar las demás herramientas.'
         ]);
     }
