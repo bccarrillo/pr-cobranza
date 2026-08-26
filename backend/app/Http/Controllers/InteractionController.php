@@ -31,7 +31,8 @@ class InteractionController extends Controller
             'metadata' => 'nullable|array'
         ]);
 
-        $debtor = Debtor::findOrFail($id);
+        // TODO: [SEGURIDAD - DEUDA TÉCNICA MVP]
+        $debtor = Debtor::withoutGlobalScope('tenant_id')->findOrFail($id);
         
         $interaction = $debtor->interactionLogs()->create([
             'channel' => $request->channel,

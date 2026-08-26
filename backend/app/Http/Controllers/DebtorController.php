@@ -159,7 +159,8 @@ class DebtorController extends Controller
             'status' => 'required|string'
         ]);
         
-        $debtor = Debtor::findOrFail($id);
+        // TODO: [SEGURIDAD - DEUDA TÉCNICA MVP]
+        $debtor = Debtor::withoutGlobalScope('tenant_id')->findOrFail($id);
         $debtor->update(['status' => $request->status]);
         
         return response()->json(['message' => 'Status updated successfully', 'debtor' => $debtor]);
