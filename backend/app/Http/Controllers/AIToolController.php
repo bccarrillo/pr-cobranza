@@ -151,6 +151,7 @@ class AIToolController extends Controller
         $request->validate([
             'message' => 'required|string',
             'user_message' => 'nullable|string',
+            'userMessage' => 'nullable|string', // Compatibilidad con Lovable (camelCase)
         ]);
 
         $debtor = Debtor::withoutGlobalScope('tenant_id')->findOrFail($id);
@@ -162,11 +163,14 @@ class AIToolController extends Controller
             ], 403);
         }
 
+        // Obtener el mensaje del usuario (ya sea en snake_case o camelCase)
+        $userMsg = $request->input('user_message') ?? $request->input('userMessage');
+
         // Si la IA nos envía lo que el usuario le dijo, lo guardamos primero
-        if ($request->filled('user_message')) {
+        if (!empty($userMsg)) {
             $debtor->chatMessages()->create([
                 'sender' => 'user',
-                'message' => $request->user_message
+                'message' => $userMsg
             ]);
         }
 
