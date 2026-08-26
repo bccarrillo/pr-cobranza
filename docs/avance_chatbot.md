@@ -24,7 +24,19 @@ Se creó un portal público y seguro diseñado específicamente para dispositivo
   - El asistente virtual no ocupa toda la pantalla, sino que vive dentro de un elegante widget en la esquina inferior derecha.
   - Al ingresar, inyecta automáticamente el token seguro en los datos del widget para que la IA sepa quién es el usuario.
 
-## 3. ¿Cómo se verá esto en tu VPS?
+## 3. Integración Directa con Motores IA (APIs M2M)
+
+Se ha consolidado el "Cerebro" detrás del Chatbot. Para que el motor de IA externo (RAG/Agente) pueda leer la base de datos de PR Cobranza de forma segura, se han desarrollado las siguientes "Tools" (Functions) accesibles en la ruta `/api/ai/*`:
+
+1. **`searchDebtorByToken`:** Busca al deudor usando su `d_token` y devuelve `total_debt`, `current_balance` y `due_date`.
+2. **`searchDebtor`:** Busca al deudor usando su número de identificación (cédula).
+3. **`getRules`:** Lee **dinámicamente** la tabla `negotiation_rules` para devolverle a la IA cuánto descuento puede ofrecer según la mora del cliente.
+4. **`generatePaymentLink`:** Genera un link de cobro instantáneo.
+5. **`sendEmail`:** Utiliza `NotificationController` para enviar correos oficiales al cliente con acuerdos y el enlace de pago.
+6. **`syncChatMessage`:** Guarda los mensajes de la IA en la bitácora del CRM.
+7. **`saveInteractionSummary`:** Registra el resultado final de la negociación en el CRM.
+
+## 4. ¿Cómo se verá esto en tu VPS?
 
 Actualmente, estás probando en `http://localhost:5173/portal/ZSNZJDPD`. 
 

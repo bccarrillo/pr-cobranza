@@ -4,6 +4,26 @@ Este documento mantiene un registro histórico de las funcionalidades implementa
 
 ---
 
+## [1.6.0] - Motor Dinámico de Reglas de Negociación y Email AI
+**Fecha:** 25 de Agosto de 2026
+
+### 🚀 Nuevas Funcionalidades
+- **Gestión Dinámica de Reglas (Frontend y Backend):**
+  - Se eliminó el "hardcoding" (reglas estáticas) en el controlador de la IA.
+  - Se creó la tabla `negotiation_rules` y el modelo `NegotiationRule` (con soporte Multitenant).
+  - Nuevo panel visual (`NegotiationRules.jsx`) que permite a los administradores crear reglas, montos de descuentos, cuotas autorizadas y agregar instrucciones "Prompt" específicas para la IA, filtrables por empresa (Tenant).
+  - La herramienta de IA `getRules` ahora consulta en tiempo real esta tabla según la mora y el `tenant_id` del deudor.
+- **Herramienta de Email (AI Tool):**
+  - Integración nativa de la función `send_email_notification` en el inventario de herramientas del Agente (OpenAPI).
+  - Permite al Agente de cobranza notificar al cliente enviando el link de pago y resúmenes de deuda vía correo electrónico de forma automática sin intervención humana.
+- **Campos Financieros en Búsqueda AI:**
+  - Las herramientas `search_debtor` y `search_debtor_by_token` ahora devuelven campos financieros críticos (`total_debt`, `current_balance`, `due_date`) ahorrando pasos lógicos al motor de Inteligencia Artificial para confirmar deudas.
+
+### 🛡️ Arquitectura y Seguridad
+- **Deuda Técnica Documentada (MVP AI Multitenant):**
+  - Para permitir que un único Bot/Número de WhatsApp atienda a todas las empresas en la fase MVP, se deshabilitó temporalmente el candado de seguridad `withoutGlobalScope('tenant_id')` dentro de `AIToolController`.
+  - Se creó el archivo `docs/seguridad_ia_multitenant.md` para guiar al equipo sobre cómo restaurar el aislamiento de datos (Data Privacy) entre Tenants antes de comercializar agresivamente en B2B.
+
 ## [1.5.0] - Implementación de Tokens Seguros (d_token)
 **Fecha:** 17 de Agosto de 2026
 
