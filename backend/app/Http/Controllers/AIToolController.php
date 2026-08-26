@@ -150,12 +150,11 @@ class AIToolController extends Controller
     {
         $request->validate([
             'message' => 'required|string',
+            'user_message' => 'nullable|string',
         ]);
 
         $debtor = Debtor::withoutGlobalScope('tenant_id')->findOrFail($id);
 
-        // Si el bot está pausado (un humano tomó el control), la IA no debería estar enviando mensajes,
-        // pero por si acaso, podemos rechazar la petición o aceptarla pero advertir.
         if ($debtor->bot_paused) {
             return response()->json([
                 'error' => 'Bot is currently paused by a human agent.',
@@ -163,6 +162,15 @@ class AIToolController extends Controller
             ], 403);
         }
 
+        // Si la IA nos envía lo que el usuario le dijo, lo guardamos primero
+        if ($request->filled('user_message')) {
+            $debtor->chatMessages()->create([
+                'sender' => 'user',
+                'message' => $request->user_message
+            ]);
+        }
+
+        // Guardamos la respuesta de la IA
         $message = $debtor->chatMessages()->create([
             'sender' => 'bot',
             'message' => $request->message
@@ -170,7 +178,7 @@ class AIToolController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Chat message saved successfully.',
+            'message' => 'Chat messages saved successfully.',
             'data' => $message
         ]);
     }
