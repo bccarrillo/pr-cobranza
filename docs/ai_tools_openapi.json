@@ -11,7 +11,7 @@
       "description": "Entorno Local (Desarrollo)"
     },
     {
-      "url": "https://pr-cobranza.nation-ai.tech/api/ai",
+      "url": "https://api.pr-cobranza.nation-ai.tech/api/ai",
       "description": "Servidor de Producción"
     }
   ],
