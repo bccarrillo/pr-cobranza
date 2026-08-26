@@ -4,7 +4,9 @@ import { Plus, Edit2, Trash2, X, AlertCircle } from 'lucide-react';
 
 const NegotiationRules = () => {
   const [rules, setRules] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [tenants, setTenants] = useState([]);
+  const [selectedTenantId, setSelectedTenantId] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRule, setEditingRule] = useState(null);
 
@@ -17,11 +19,26 @@ const NegotiationRules = () => {
     ai_message_prompt: ''
   });
 
+  const fetchTenants = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:8081/api/v1/tenants', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      setTenants(response.data);
+      if (response.data.length > 0) {
+        setSelectedTenantId(response.data[0].id);
+      }
+    } catch (error) {
+      console.error('Error fetching tenants', error);
+    }
+  };
+
   const fetchRules = async () => {
+    if (!selectedTenantId) return;
     try {
       setIsLoading(true);
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://127.0.0.1:8081/api/v1/rules', {
+      const response = await axios.get(`http://127.0.0.1:8081/api/v1/rules?tenant_id=${selectedTenantId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setRules(response.data);
@@ -33,8 +50,14 @@ const NegotiationRules = () => {
   };
 
   useEffect(() => {
-    fetchRules();
+    fetchTenants();
   }, []);
+
+  useEffect(() => {
+    if (selectedTenantId) {
+      fetchRules();
+    }
+  }, [selectedTenantId]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -45,12 +68,14 @@ const NegotiationRules = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
+      const payload = { ...formData, tenant_id: selectedTenantId };
+      
       if (editingRule) {
-        await axios.put(`http://127.0.0.1:8081/api/v1/rules/${editingRule.id}`, formData, {
+        await axios.put(`http://127.0.0.1:8081/api/v1/rules/${editingRule.id}`, payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
       } else {
-        await axios.post('http://127.0.0.1:8081/api/v1/rules', formData, {
+        await axios.post('http://127.0.0.1:8081/api/v1/rules', payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
       }
@@ -102,41 +127,60 @@ const NegotiationRules = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 h-full flex flex-col">
+      <div className="flex flex-col md:flex-row justify-between md:items-end gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">Reglas de Cobranza (IA)</h2>
-          <p className="text-slate-500 mt-1">Configura los descuentos y cuotas permitidas según la mora del cliente.</p>
+          <h2 className="text-3xl font-bold text-light-text-primary tracking-tight">Reglas de Cobranza (IA)</h2>
+          <p className="text-light-text-secondary mt-1">Configura los descuentos y cuotas permitidas según la mora del cliente.</p>
         </div>
-        <button
-          onClick={openNewModal}
-          className="flex items-center gap-2 bg-light-purple text-white px-4 py-2 rounded-xl hover:bg-light-purple/90 transition-colors shadow-sm"
-        >
-          <Plus size={20} />
-          Nueva Regla
-        </button>
+        <div className="flex items-center gap-3">
+          <select 
+            value={selectedTenantId} 
+            onChange={(e) => setSelectedTenantId(e.target.value)}
+            className="px-4 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-light-blue/20 focus:border-light-blue"
+          >
+            <option value="" disabled>Seleccione Empresa</option>
+            {tenants.map(t => (
+              <option key={t.id} value={t.id}>{t.name}</option>
+            ))}
+          </select>
+          <button
+            onClick={openNewModal}
+            disabled={!selectedTenantId}
+            className="flex items-center gap-2 bg-light-purple text-white px-4 py-2 rounded-xl hover:bg-light-purple/90 transition-colors shadow-sm disabled:opacity-50"
+          >
+            <Plus size={20} />
+            Nueva Regla
+          </button>
+        </div>
       </div>
 
-      {isLoading ? (
-        <div className="flex justify-center p-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-light-purple"></div></div>
-      ) : (
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-slate-50 border-b border-slate-200">
+      <div className="glass-card flex-1 flex flex-col min-h-0 p-0 overflow-hidden">
+        {isLoading ? (
+          <div className="flex justify-center p-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-light-purple"></div></div>
+        ) : (
+          <div className="flex-1 overflow-auto">
+            <table className="w-full text-left border-collapse">
+              <thead className="bg-slate-50/80 sticky top-0 backdrop-blur-sm z-10 border-b border-slate-200">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Rango de Mora</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Estrategia</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Descuento Max.</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Cuotas</th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                  <th className="py-3 px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider">Rango de Mora</th>
+                  <th className="py-3 px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider">Estrategia</th>
+                  <th className="py-3 px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider">Descuento Max.</th>
+                  <th className="py-3 px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider">Cuotas</th>
+                  <th className="py-3 px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider text-right">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {rules.length === 0 ? (
+                {!selectedTenantId ? (
                   <tr>
                     <td colSpan="5" className="px-6 py-8 text-center text-slate-500">
-                      No hay reglas configuradas.
+                      Selecciona una empresa para ver sus reglas.
+                    </td>
+                  </tr>
+                ) : rules.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="px-6 py-8 text-center text-slate-500">
+                      No hay reglas configuradas para esta empresa.
                     </td>
                   </tr>
                 ) : (
@@ -148,15 +192,15 @@ const NegotiationRules = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-medium">
+                        <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-medium border border-slate-200">
                           {rule.strategy_name}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-slate-600 font-semibold">{parseFloat(rule.max_discount_percentage)}%</div>
+                        <div className="text-slate-700 font-semibold">{parseFloat(rule.max_discount_percentage)}%</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-slate-600">{rule.allowed_installments} máx.</div>
+                        <div className="text-slate-700">{rule.allowed_installments} máx.</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button
@@ -178,8 +222,8 @@ const NegotiationRules = () => {
               </tbody>
             </table>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Modal */}
       {isModalOpen && (

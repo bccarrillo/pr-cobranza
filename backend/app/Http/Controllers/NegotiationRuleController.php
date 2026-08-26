@@ -7,16 +7,22 @@ use App\Models\NegotiationRule;
 
 class NegotiationRuleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // El trait Multitenantable filtra automáticamente por tenant_id
-        $rules = NegotiationRule::orderBy('min_days', 'asc')->get();
+        $query = NegotiationRule::orderBy('min_days', 'asc');
+        
+        if ($request->has('tenant_id')) {
+            $query->where('tenant_id', $request->query('tenant_id'));
+        }
+
+        $rules = $query->get();
         return response()->json($rules);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'tenant_id' => 'required|exists:tenants,id',
             'min_days' => 'required|integer',
             'max_days' => 'required|integer|gte:min_days',
             'max_discount_percentage' => 'required|numeric|min:0|max:100',
@@ -24,8 +30,6 @@ class NegotiationRuleController extends Controller
             'strategy_name' => 'required|string',
             'ai_message_prompt' => 'nullable|string',
         ]);
-
-        $validated['tenant_id'] = auth()->user()->tenant_id;
 
         $rule = NegotiationRule::create($validated);
         return response()->json($rule, 201);
