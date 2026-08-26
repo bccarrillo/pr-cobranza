@@ -12,6 +12,7 @@ import Settings from './pages/Settings';
 import ChatPortal from './pages/ChatPortal';
 import Inbox from './pages/Inbox';
 import Checkout from './pages/Checkout';
+import NegotiationRules from './pages/NegotiationRules';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="tenants" element={<Tenants />} />
           <Route path="users" element={<Users />} />
           <Route path="inbox" element={<Inbox />} />
+          <Route path="rules" element={<NegotiationRules />} />
           <Route path="settings" element={<Settings />} />
           <Route path="ai-integration" element={<AIIntegration />} />
         </Route>

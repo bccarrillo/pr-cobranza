@@ -140,6 +140,21 @@ const Layout = () => {
           </NavLink>
 
           <NavLink
+            to="/rules"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
+                isActive
+                  ? 'bg-blue-50 text-blue-600 shadow-sm'
+                  : 'text-light-text-secondary hover:bg-slate-100 hover:text-light-text-primary'
+              }`
+            }
+          >
+            <Settings size={20} />
+            <span>Reglas de Cobranza</span>
+          </NavLink>
+
+          <NavLink
             to="/settings"
             onClick={() => setIsMobileMenuOpen(false)}
             className={({ isActive }) =>

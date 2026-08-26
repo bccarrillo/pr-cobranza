@@ -26,11 +26,17 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('tenants', TenantController::class);
     Route::apiResource('users', UserController::class);
     
-    // Automatizaciones (Campañas)
+    // Configuración de campañas
     Route::get('/campaigns', [CampaignController::class, 'index']);
     Route::post('/campaigns', [CampaignController::class, 'store']);
     Route::put('/campaigns/{id}', [CampaignController::class, 'update']);
     Route::delete('/campaigns/{id}', [CampaignController::class, 'destroy']);
+
+    // Reglas de Negociación
+    Route::get('/rules', [\App\Http\Controllers\NegotiationRuleController::class, 'index']);
+    Route::post('/rules', [\App\Http\Controllers\NegotiationRuleController::class, 'store']);
+    Route::put('/rules/{id}', [\App\Http\Controllers\NegotiationRuleController::class, 'update']);
+    Route::delete('/rules/{id}', [\App\Http\Controllers\NegotiationRuleController::class, 'destroy']);
     Route::patch('/campaigns/{id}/toggle', [CampaignController::class, 'toggle']);
 
     Route::post('/imports', [ImportController::class, 'store']);

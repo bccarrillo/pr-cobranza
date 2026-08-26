@@ -86,27 +86,23 @@ class AIToolController extends Controller
             'status' => $debtor->status,
         ];
 
-        // Reglas de negocio dinámicas para la IA
-        if ($debtor->days_overdue <= 0) {
+        // Buscar regla aplicable en la base de datos
+        $rule = \App\Models\NegotiationRule::where('tenant_id', $debtor->tenant_id)
+            ->where('min_days', '<=', $debtor->days_overdue)
+            ->where('max_days', '>=', $debtor->days_overdue)
+            ->first();
+
+        if ($rule) {
+            $rules['max_discount_percentage'] = floatval($rule->max_discount_percentage);
+            $rules['allowed_installments'] = $rule->allowed_installments;
+            $rules['strategy'] = $rule->strategy_name;
+            $rules['message'] = $rule->ai_message_prompt;
+        } else {
+            // Regla de contingencia por si no hay reglas configuradas para este tenant
             $rules['max_discount_percentage'] = 0;
             $rules['allowed_installments'] = 1;
-            $rules['strategy'] = 'preventive_reminder';
-            $rules['message'] = 'Recordar amablemente la fecha de pago próxima. No ofrecer descuentos.';
-        } elseif ($debtor->days_overdue > 0 && $debtor->days_overdue <= 30) {
-            $rules['max_discount_percentage'] = 5;
-            $rules['allowed_installments'] = 2;
-            $rules['strategy'] = 'early_collection';
-            $rules['message'] = 'Ofrecer acuerdo rápido. Máximo 5% de descuento solo si paga de inmediato.';
-        } elseif ($debtor->days_overdue > 30 && $debtor->days_overdue <= 90) {
-            $rules['max_discount_percentage'] = 15;
-            $rules['allowed_installments'] = 3;
-            $rules['strategy'] = 'medium_collection';
-            $rules['message'] = 'Buscar regularización. Puede ofrecer pago en 3 cuotas o hasta 15% de descuento en pago único.';
-        } else {
-            $rules['max_discount_percentage'] = 30;
-            $rules['allowed_installments'] = 6;
-            $rules['strategy'] = 'late_collection_aggressive';
-            $rules['message'] = 'Última instancia antes de cobro jurídico. Ofrecer máximo descuento (30%) o hasta 6 cuotas.';
+            $rules['strategy'] = 'contingency_no_discount';
+            $rules['message'] = 'No hay reglas configuradas. Solicita el pago total y no ofrezcas descuentos.';
         }
 
         return response()->json($rules);
