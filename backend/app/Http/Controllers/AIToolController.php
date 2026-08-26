@@ -18,7 +18,10 @@ class AIToolController extends Controller
             return response()->json(['error' => 'El parámetro identification es requerido'], 400);
         }
 
-        $debtor = Debtor::where('identification', $identification)->first();
+        // TODO: [SEGURIDAD - DEUDA TÉCNICA MVP]
+        // Se deshabilitó el Global Scope 'tenant_id' para permitir que un solo Bot atienda a todas las empresas.
+        // Para escalar a B2B real (Un Bot/Token por Empresa), eliminar "withoutGlobalScope('tenant_id')"
+        $debtor = Debtor::withoutGlobalScope('tenant_id')->where('identification', $identification)->first();
 
         if (!$debtor) {
             return response()->json(['error' => 'No se encontró ningún deudor con esa identificación'], 404);
@@ -47,7 +50,9 @@ class AIToolController extends Controller
             return response()->json(['error' => 'Debe enviar el parámetro token o email en el body (JSON)'], 400);
         }
 
-        $query = Debtor::query();
+        // TODO: [SEGURIDAD - DEUDA TÉCNICA MVP]
+        // Para aislar datos por empresa, eliminar "withoutGlobalScope('tenant_id')"
+        $query = Debtor::withoutGlobalScope('tenant_id');
         
         if ($token) {
             $query->where('d_token', $token);
@@ -78,7 +83,9 @@ class AIToolController extends Controller
      */
     public function getRules($id)
     {
-        $debtor = Debtor::findOrFail($id);
+        // TODO: [SEGURIDAD - DEUDA TÉCNICA MVP]
+        // Eliminar "withoutGlobalScope" en producción B2B
+        $debtor = Debtor::withoutGlobalScope('tenant_id')->findOrFail($id);
         
         $rules = [
             'debtor_id' => $debtor->id,
@@ -118,7 +125,9 @@ class AIToolController extends Controller
             'description' => 'nullable|string'
         ]);
 
-        $debtor = Debtor::findOrFail($id);
+        // TODO: [SEGURIDAD - DEUDA TÉCNICA MVP]
+        // Eliminar "withoutGlobalScope" en producción B2B
+        $debtor = Debtor::withoutGlobalScope('tenant_id')->findOrFail($id);
 
         // Simulamos la generación de un link de Stripe o MercadoPago
         // NOTA: Este código fue forzado a actualizarse para limpiar el OPCache del VPS.
@@ -143,7 +152,7 @@ class AIToolController extends Controller
             'message' => 'required|string',
         ]);
 
-        $debtor = Debtor::findOrFail($id);
+        $debtor = Debtor::withoutGlobalScope('tenant_id')->findOrFail($id);
 
         // Si el bot está pausado (un humano tomó el control), la IA no debería estar enviando mensajes,
         // pero por si acaso, podemos rechazar la petición o aceptarla pero advertir.
