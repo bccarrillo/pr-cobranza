@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { LayoutDashboard, Users, Settings, LogOut, Building2, UserCircle, UploadCloud, Bot, Banknote, Megaphone, Menu, X, MessageSquare } from 'lucide-react';
+import {
+  Layers, LayoutDashboard, Building2, User, Users,
+  CreditCard, Zap, ClipboardList, Settings2, Sliders,
+  Bot, LogOut, Menu, HelpCircle, Settings, ChevronDown, X
+} from 'lucide-react';
 
 const Layout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-light-bg text-light-text-primary font-sans overflow-hidden">
+    <div className="flex h-screen overflow-hidden text-gray-800 font-sans bg-bgLight">
       
       {/* Mobile Overlay */}
       {isMobileMenuOpen && (
@@ -16,217 +20,182 @@ const Layout = () => {
         />
       )}
 
-      {/* Sidebar - Glassmorphism */}
-      <aside className={`fixed md:relative inset-y-0 left-0 w-64 bg-white/90 md:bg-white/70 backdrop-blur-md border-r border-slate-200/80 flex flex-col transition-transform duration-300 z-50 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
-        <div className="p-6 flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-light-blue to-light-purple">
-              PR Cobranza
-            </h1>
-            <p className="text-xs text-light-text-secondary mt-1 tracking-wider uppercase font-semibold">Workspace</p>
+      {/* SIDEBAR */}
+      <aside className={`fixed md:relative inset-y-0 left-0 w-64 bg-sidebarBg border-r border-borderLight flex flex-col justify-between shadow-sm z-50 transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+        <div className="flex flex-col h-full">
+          {/* Logo area */}
+          <div className="h-16 flex items-center px-6 border-b border-borderLight shrink-0 justify-between">
+            <span className="text-xl font-bold text-primary tracking-tight flex items-center gap-2">
+              <Layers size={22} className="text-primary" /> PR Cobranza
+            </span>
+            <button 
+              className="md:hidden p-1 text-slate-400 hover:text-slate-600"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <X size={24} />
+            </button>
           </div>
-          <button 
-            className="md:hidden p-1 text-slate-400 hover:text-slate-600"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            <X size={24} />
-          </button>
-        </div>
+          
+          <div className="px-6 py-3 shrink-0">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-2">Workspace</p>
+          </div>
 
-        <nav className="flex-1 px-4 space-y-2 mt-4 overflow-y-auto pb-4">
-          <NavLink
-            to="/"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
-                isActive
-                  ? 'bg-light-blue-soft text-light-blue shadow-sm'
-                  : 'text-light-text-secondary hover:bg-slate-100 hover:text-light-text-primary'
-              }`
-            }
-          >
-            <LayoutDashboard size={20} />
-            <span>Dashboard</span>
-          </NavLink>
+          {/* Navigation */}
+          <nav className="flex-1 overflow-y-auto pb-4 custom-scrollbar">
+            <ul className="space-y-1">
+              <li>
+                <NavLink to="/" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => `sidebar-item flex items-center px-6 py-2.5 text-sm ${isActive ? 'active' : 'text-secondary'}`}>
+                  <LayoutDashboard size={20} className="w-6 text-center" />
+                  <span className="ml-2">Dashboard</span>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/tenants" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => `sidebar-item flex items-center px-6 py-2.5 text-sm ${isActive ? 'active' : 'text-secondary'}`}>
+                  <Building2 size={20} className="w-6 text-center" />
+                  <span className="ml-2">Empresas</span>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/users" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => `sidebar-item flex items-center px-6 py-2.5 text-sm ${isActive ? 'active' : 'text-secondary'}`}>
+                  <User size={20} className="w-6 text-center" />
+                  <span className="ml-2">Usuarios</span>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/debtors" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => `sidebar-item flex items-center px-6 py-2.5 text-sm ${isActive ? 'active' : 'text-secondary'}`}>
+                  <Users size={20} className="w-6 text-center" />
+                  <span className="ml-2">Deudores</span>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/payments" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => `sidebar-item flex items-center px-6 py-2.5 text-sm ${isActive ? 'active' : 'text-secondary'}`}>
+                  <CreditCard size={20} className="w-6 text-center" />
+                  <span className="ml-2">Pagos y Recaudos</span>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/campaigns" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => `sidebar-item flex items-center px-6 py-2.5 text-sm ${isActive ? 'active' : 'text-secondary'}`}>
+                  <Zap size={20} className="w-6 text-center" />
+                  <span className="ml-2">Automatizaciones</span>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/inbox" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => `sidebar-item flex items-center px-6 py-2.5 text-sm ${isActive ? 'active' : 'text-secondary'}`}>
+                  <ClipboardList size={20} className="w-6 text-center" />
+                  <span className="ml-2">Bitácora IA</span>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/rules" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => `sidebar-item flex items-center px-6 py-2.5 text-sm ${isActive ? 'active' : 'text-secondary'}`}>
+                  <Settings2 size={20} className="w-6 text-center" />
+                  <span className="ml-2">Reglas de Cobranza</span>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/settings" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => `sidebar-item flex items-center px-6 py-2.5 text-sm ${isActive ? 'active' : 'text-secondary'}`}>
+                  <Sliders size={20} className="w-6 text-center" />
+                  <span className="ml-2">Configuración</span>
+                </NavLink>
+              </li>
+              
+              {/* Separator line */}
+              <li className="my-3 px-6">
+                <div className="h-px bg-gray-100"></div>
+              </li>
+              
+              <li>
+                <NavLink to="/ai-integration" onClick={() => setIsMobileMenuOpen(false)} className={({ isActive }) => `sidebar-item flex items-center px-6 py-2.5 text-sm ${isActive ? 'active' : 'text-secondary'}`}>
+                  <Bot size={20} className="w-6 text-center" />
+                  <span className="ml-2">Integración IA</span>
+                </NavLink>
+              </li>
+            </ul>
+          </nav>
 
-          <NavLink
-            to="/tenants"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
-                isActive
-                  ? 'bg-light-blue-soft text-light-blue shadow-sm'
-                  : 'text-light-text-secondary hover:bg-slate-100 hover:text-light-text-primary'
-              }`
-            }
-          >
-            <Building2 size={20} />
-            <span>Empresas</span>
-          </NavLink>
-
-          <NavLink
-            to="/users"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
-                isActive
-                  ? 'bg-light-blue-soft text-light-blue shadow-sm'
-                  : 'text-light-text-secondary hover:bg-slate-100 hover:text-light-text-primary'
-              }`
-            }
-          >
-            <UserCircle size={20} />
-            <span>Usuarios</span>
-          </NavLink>
-
-          <NavLink
-            to="/debtors"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
-                isActive
-                  ? 'bg-light-blue-soft text-light-blue shadow-sm'
-                  : 'text-light-text-secondary hover:bg-slate-100 hover:text-light-text-primary'
-              }`
-            }
-          >
-            <Users size={20} />
-            <span>Deudores</span>
-          </NavLink>
-
-          <NavLink
-            to="/payments"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
-                isActive
-                  ? 'bg-green-50 text-green-600 shadow-sm'
-                  : 'text-light-text-secondary hover:bg-slate-100 hover:text-light-text-primary'
-              }`
-            }
-          >
-            <Banknote size={20} />
-            <span>Pagos y Recaudos</span>
-          </NavLink>
-
-          <NavLink
-            to="/campaigns"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
-                isActive
-                  ? 'bg-purple-50 text-purple-600 shadow-sm'
-                  : 'text-light-text-secondary hover:bg-slate-100 hover:text-light-text-primary'
-              }`
-            }
-          >
-            <Megaphone size={20} />
-            <span>Automatizaciones</span>
-          </NavLink>
-
-          <NavLink
-            to="/inbox"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
-                isActive
-                  ? 'bg-purple-50 text-purple-600 shadow-sm'
-                  : 'text-light-text-secondary hover:bg-slate-100 hover:text-light-text-primary'
-              }`
-            }
-          >
-            <MessageSquare size={20} />
-            <span>Bitácora IA</span>
-          </NavLink>
-
-          <NavLink
-            to="/rules"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
-                isActive
-                  ? 'bg-blue-50 text-blue-600 shadow-sm'
-                  : 'text-light-text-secondary hover:bg-slate-100 hover:text-light-text-primary'
-              }`
-            }
-          >
-            <Settings size={20} />
-            <span>Reglas de Cobranza</span>
-          </NavLink>
-
-          <NavLink
-            to="/settings"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${
-                isActive
-                  ? 'bg-slate-200 text-slate-800 shadow-sm'
-                  : 'text-light-text-secondary hover:bg-slate-100 hover:text-light-text-primary'
-              }`
-            }
-          >
-            <Settings size={20} />
-            <span>Configuración</span>
-          </NavLink>
-
-          <NavLink
-            to="/ai-integration"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium mt-4 border border-dashed border-slate-200 ${
-                isActive
-                  ? 'bg-light-purple-soft/50 text-light-purple border-light-purple/30 shadow-sm'
-                  : 'text-slate-500 hover:bg-slate-50 hover:text-light-purple'
-              }`
-            }
-          >
-            <Bot size={20} />
-            <span>Integración IA</span>
-          </NavLink>
-        </nav>
-
-        <div className="p-4 border-t border-slate-200/80 mt-auto bg-white/50">
-          <button className="flex w-full items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 text-light-text-secondary hover:bg-red-50 hover:text-red-500 font-medium">
-            <LogOut size={20} />
-            <span>Cerrar Sesión</span>
-          </button>
+          {/* Logout area */}
+          <div className="border-t border-borderLight p-4 shrink-0">
+            <button className="flex w-full items-center px-2 py-2 text-secondary text-sm font-medium hover:text-red-600 transition-colors rounded-md hover:bg-red-50">
+              <LogOut size={20} className="w-6 text-center" />
+              <span className="ml-2">Cerrar Sesión</span>
+            </button>
+          </div>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col h-screen overflow-hidden w-full">
-        {/* Top Navbar */}
-        <header className="h-16 bg-white/50 backdrop-blur-md border-b border-slate-200/80 flex items-center justify-between px-4 md:px-8 z-10">
-          <div className="flex items-center text-light-text-secondary">
+      {/* MAIN WRAPPER */}
+      <div className="flex-1 flex flex-col min-w-0 bg-bgLight">
+        
+        {/* HEADER */}
+        <header className="h-16 bg-white border-b border-borderLight flex items-center justify-between px-6 shadow-sm z-10 shrink-0">
+          {/* Mobile menu button */}
+          <div className="flex items-center md:hidden">
             <button 
-              className="md:hidden p-2 mr-2 rounded-lg hover:bg-slate-100 transition-colors text-slate-500"
+              className="text-gray-500 hover:text-gray-700 p-2 rounded-md hover:bg-gray-100"
               onClick={() => setIsMobileMenuOpen(true)}
             >
-              <Menu size={24} />
+              <Menu size={20} />
             </button>
-            {/* Breadcrumbs placeholder or Search bar */}
+            <span className="ml-3 text-lg font-bold text-primary">PR Cobranza</span>
           </div>
-          <div className="flex items-center gap-3 md:gap-4">
-            <button className="p-2 rounded-full hover:bg-slate-100 transition-colors text-light-text-secondary">
-              <Settings size={20} />
+          
+          <div className="hidden md:flex flex-1">
+            {/* Opcional: Breadcrumbs o barra de búsqueda global */}
+          </div>
+
+          {/* Right side Header items */}
+          <div className="flex items-center space-x-3">
+            {/* Help / Support */}
+            <button className="w-9 h-9 rounded-full flex items-center justify-center text-gray-400 hover:text-primary hover:bg-blue-50 transition-colors">
+              <HelpCircle size={18} />
             </button>
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-light-blue to-light-purple flex items-center justify-center text-white font-bold shadow-md text-sm md:text-base">
-              A
-            </div>
+
+            {/* Settings */}
+            <button className="w-9 h-9 rounded-full flex items-center justify-center text-gray-400 hover:text-primary hover:bg-blue-50 transition-colors">
+              <Settings size={18} />
+            </button>
+            
+            {/* Divider */}
+            <div className="h-6 w-px bg-gray-200 mx-2"></div>
+
+            {/* User Profile Dropdown trigger */}
+            <button className="flex items-center gap-2 hover:bg-gray-50 p-1.5 rounded-lg transition-colors border border-transparent hover:border-gray-200">
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-sm shadow-sm">
+                A
+              </div>
+              <div className="hidden md:block text-left">
+                <p className="text-xs font-semibold text-gray-700 leading-none">Admin Usuario</p>
+                <p className="text-[10px] text-gray-500 mt-0.5">admin@prcobranza.com</p>
+              </div>
+              <ChevronDown size={14} className="text-gray-400 ml-1 hidden md:block" />
+            </button>
           </div>
         </header>
 
-        {/* Page Content */}
-        <div className="flex-1 overflow-auto p-8 relative">
-          {/* Subtle background decoration */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-light-blue-soft rounded-full mix-blend-multiply filter blur-3xl opacity-50 -z-10 transform translate-x-1/3 -translate-y-1/3"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-light-purple-soft rounded-full mix-blend-multiply filter blur-3xl opacity-50 -z-10 transform -translate-x-1/3 translate-y-1/3"></div>
-          
-          <div className="relative z-0 max-w-7xl mx-auto h-full">
+        {/* MAIN CONTENT AREA */}
+        <main className="flex-1 overflow-auto relative custom-scrollbar p-4 md:p-8">
+          <div className="max-w-7xl mx-auto h-full">
             <Outlet />
           </div>
-        </div>
-      </main>
+        </main>
+        
+        {/* FOOTER */}
+        <footer className="bg-white border-t border-borderLight p-4 shrink-0 z-10">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between text-xs text-gray-500 gap-2">
+            <div>
+              <span className="font-medium text-gray-600">PR Cobranza</span> &copy; 2026. Todos los derechos reservados.
+            </div>
+            <div className="flex space-x-6">
+              <a href="#" className="hover:text-primary transition-colors flex items-center gap-1">
+                Soporte
+              </a>
+              <a href="#" className="hover:text-primary transition-colors">Términos de servicio</a>
+              <a href="#" className="hover:text-primary transition-colors">Políticas de privacidad</a>
+              <span className="text-gray-300">|</span>
+              <span className="text-gray-400">v1.2.0</span>
+            </div>
+          </div>
+        </footer>
+      </div>
     </div>
   );
 };

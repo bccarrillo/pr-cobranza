@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR Cobranza - Mockup Global</title>
+    <!-- Tailwind CSS for rapid styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#1E40AF', // Azul corporativo (Blue 800)
+                        primaryLight: '#3B82F6', // Azul más claro (Blue 500)
+                        secondary: '#4B5563', // Gris texto (Gray 600)
+                        bgLight: '#F8FAFC', // Fondo gris muy claro (Slate 50)
+                        sidebarBg: '#FFFFFF', // Blanco
+                        borderLight: '#E2E8F0', // Borde gris suave (Slate 200)
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #F8FAFC;
+        }
+        .sidebar-item {
+            transition: all 0.2s ease-in-out;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-item:hover {
+            background-color: #F1F5F9;
+            color: #1E40AF;
+        }
+        .sidebar-item.active {
+            background-color: #EFF6FF; /* Fondo azul muy claro */
+            color: #1E40AF;
+            border-left: 3px solid #1E40AF;
+            font-weight: 600;
+        }
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+        /* Modal Animation */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.2s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden font-sans text-gray-800">
+
+    <!-- SIDEBAR -->
+    <aside class="w-64 bg-sidebarBg border-r border-borderLight flex flex-col justify-between shadow-sm z-20 hidden md:flex">
+        <div class="flex flex-col h-full">
+            <!-- Logo area -->
+            <div class="h-16 flex items-center px-6 border-b border-borderLight shrink-0">
+                <span class="text-xl font-bold text-primary tracking-tight flex items-center gap-2">
+                    <i class="fas fa-layer-group"></i> PR Cobranza
+                </span>
+            </div>
+            
+            <div class="px-6 py-3 shrink-0">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-2">Workspace</p>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 overflow-y-auto pb-4">
+                <ul class="space-y-1">
+                    <li>
+                        <a href="#" class="sidebar-item flex items-center px-6 py-2.5 text-secondary text-sm">
+                            <i class="fas fa-chart-pie w-6 text-gray-400 text-center"></i>
+                            <span class="ml-2">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="sidebar-item flex items-center px-6 py-2.5 text-secondary text-sm">
+                            <i class="far fa-building w-6 text-gray-400 text-center"></i>
+                            <span class="ml-2">Empresas</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="sidebar-item flex items-center px-6 py-2.5 text-secondary text-sm">
+                            <i class="far fa-user w-6 text-gray-400 text-center"></i>
+                            <span class="ml-2">Usuarios</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="sidebar-item active flex items-center px-6 py-2.5 text-sm">
+                            <i class="fas fa-user-tag w-6 text-primary text-center"></i>
+                            <span class="ml-2">Deudores</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="sidebar-item flex items-center px-6 py-2.5 text-secondary text-sm">
+                            <i class="far fa-credit-card w-6 text-gray-400 text-center"></i>
+                            <span class="ml-2">Pagos y Recaudos</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="sidebar-item flex items-center px-6 py-2.5 text-secondary text-sm">
+                            <i class="fas fa-bolt w-6 text-gray-400 text-center"></i>
+                            <span class="ml-2">Automatizaciones</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="sidebar-item flex items-center px-6 py-2.5 text-secondary text-sm">
+                            <i class="far fa-clipboard w-6 text-gray-400 text-center"></i>
+                            <span class="ml-2">Bitácora IA</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="sidebar-item flex items-center px-6 py-2.5 text-secondary text-sm">
+                            <i class="fas fa-cogs w-6 text-gray-400 text-center"></i>
+                            <span class="ml-2">Reglas de Cobranza</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="sidebar-item flex items-center px-6 py-2.5 text-secondary text-sm">
+                            <i class="fas fa-sliders-h w-6 text-gray-400 text-center"></i>
+                            <span class="ml-2">Configuración</span>
+                        </a>
+                    </li>
+                    
+                    <!-- Separator line -->
+                    <li class="my-3 px-6">
+                        <div class="h-px bg-gray-100"></div>
+                    </li>
+                    
+                    <li>
+                        <a href="#" class="sidebar-item flex items-center px-6 py-2.5 text-secondary text-sm">
+                            <i class="fas fa-brain w-6 text-gray-400 text-center"></i>
+                            <span class="ml-2">Integración IA</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Logout area fixed at bottom -->
+            <div class="border-t border-borderLight p-4 shrink-0">
+                <a href="#" class="flex items-center px-2 py-2 text-secondary text-sm font-medium hover:text-red-600 transition-colors rounded-md hover:bg-red-50">
+                    <i class="fas fa-sign-out-alt w-6 text-center"></i>
+                    <span class="ml-2">Cerrar Sesión</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="flex-1 flex flex-col min-w-0 bg-bgLight">
+        
+        <!-- HEADER -->
+        <header class="h-16 bg-white border-b border-borderLight flex items-center justify-between px-6 shadow-sm z-10 shrink-0">
+            <!-- Mobile menu button -->
+            <div class="flex items-center md:hidden">
+                <button class="text-gray-500 hover:text-gray-700 p-2 rounded-md hover:bg-gray-100">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <span class="ml-3 text-lg font-bold text-primary">PR Cobranza</span>
+            </div>
+            
+            <div class="hidden md:flex flex-1">
+                <!-- Opcional: Breadcrumbs o barra de búsqueda global -->
+            </div>
+
+            <!-- Right side Header items -->
+            <div class="flex items-center space-x-3">
+                <!-- Help / Support -->
+                <button class="w-9 h-9 rounded-full flex items-center justify-center text-gray-400 hover:text-primary hover:bg-blue-50 transition-colors">
+                    <i class="far fa-question-circle text-lg"></i>
+                </button>
+
+                <!-- Settings -->
+                <button class="w-9 h-9 rounded-full flex items-center justify-center text-gray-400 hover:text-primary hover:bg-blue-50 transition-colors">
+                    <i class="fas fa-cog text-lg"></i>
+                </button>
+                
+                <!-- Divider -->
+                <div class="h-6 w-px bg-gray-200 mx-2"></div>
+
+                <!-- User Profile Dropdown trigger -->
+                <button class="flex items-center gap-2 hover:bg-gray-50 p-1.5 rounded-lg transition-colors border border-transparent hover:border-gray-200">
+                    <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-semibold text-sm shadow-sm">
+                        A
+                    </div>
+                    <div class="hidden md:block text-left">
+                        <p class="text-xs font-semibold text-gray-700 leading-none">Admin Usuario</p>
+                        <p class="text-[10px] text-gray-500 mt-0.5">admin@prcobranza.com</p>
+                    </div>
+                    <i class="fas fa-chevron-down text-xs text-gray-400 ml-1"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 overflow-auto p-4 md:p-8">
+            <div class="max-w-7xl mx-auto">
+                <!-- Page Header -->
+                <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800 tracking-tight">Deudores</h1>
+                        <p class="text-sm text-gray-500 mt-1">Gestiona el portafolio y monitorea los estados de cuenta.</p>
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <select class="bg-white border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-2 focus:ring-primaryLight focus:border-primary block px-3 py-2 shadow-sm outline-none transition-all">
+                            <option>Empresa Test VPS</option>
+                            <option>Otra Empresa S.A.</option>
+                        </select>
+                        
+                        <button class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center">
+                            <i class="fas fa-cloud-upload-alt mr-2 text-gray-400"></i> Importar
+                        </button>
+                        
+                        <button class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center">
+                            <i class="fas fa-file-export mr-2 text-gray-400"></i> Exportar
+                        </button>
+
+                        <button onclick="document.getElementById('modal-nuevo-caso').classList.remove('hidden')" class="bg-primary hover:bg-blue-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center">
+                            <i class="fas fa-plus mr-2"></i> Nuevo Caso
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Content Card (Table Wrapper) -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <!-- Toolbar -->
+                    <div class="p-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50/50">
+                        <div class="relative w-full sm:w-80">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-gray-400 text-sm"></i>
+                            </div>
+                            <input type="text" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-primaryLight focus:border-primary block w-full pl-9 p-2 outline-none transition-all" placeholder="Buscar por nombre o identificación...">
+                        </div>
+                        
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <button class="flex-1 sm:flex-none flex items-center justify-center text-sm text-gray-700 bg-white border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-50 transition-colors shadow-sm">
+                                <i class="far fa-clock mr-2 text-gray-400"></i> Atención Requerida
+                            </button>
+                            <button class="text-gray-600 bg-white border border-gray-300 rounded-lg p-2 hover:bg-gray-50 transition-colors shadow-sm" title="Filtros avanzados">
+                                <i class="fas fa-filter px-1"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-600">
+                            <thead class="text-xs text-gray-500 uppercase bg-gray-100 border-b border-gray-200">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 font-semibold">Cliente</th>
+                                    <th scope="col" class="px-6 py-3 font-semibold">Identificación</th>
+                                    <th scope="col" class="px-6 py-3 font-semibold">Saldo Actual</th>
+                                    <th scope="col" class="px-6 py-3 font-semibold">Correo</th>
+                                    <th scope="col" class="px-6 py-3 font-semibold">Fecha Venc.</th>
+                                    <th scope="col" class="px-6 py-3 font-semibold">Días Mora</th>
+                                    <th scope="col" class="px-6 py-3 font-semibold">Estado</th>
+                                    <th scope="col" class="px-6 py-3 font-semibold text-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white border-b border-gray-100 hover:bg-blue-50/50 transition-colors">
+                                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">Gerson Gomez</td>
+                                    <td class="px-6 py-4 text-gray-500">4455666</td>
+                                    <td class="px-6 py-4 font-semibold text-gray-900">$3,000,000.00</td>
+                                    <td class="px-6 py-4 text-gray-500">archangelark@gmail.com</td>
+                                    <td class="px-6 py-4 text-gray-500">2026-08-16</td>
+                                    <td class="px-6 py-4 text-red-600 font-medium">26 días</td>
+                                    <td class="px-6 py-4">
+                                        <span class="bg-yellow-50 text-yellow-700 text-xs font-medium px-2.5 py-1 rounded-full border border-yellow-200 whitespace-nowrap">
+                                            <i class="fas fa-circle text-[8px] mr-1 text-yellow-500"></i> Mora Temprana
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right whitespace-nowrap">
+                                        <div class="flex justify-end gap-2">
+                                            <button class="w-8 h-8 rounded text-gray-400 hover:text-primary hover:bg-blue-50 transition-colors" title="Acción IA"><i class="fas fa-robot"></i></button>
+                                            <button class="w-8 h-8 rounded text-gray-400 hover:text-primary hover:bg-blue-50 transition-colors" title="Facturación"><i class="fas fa-file-invoice-dollar"></i></button>
+                                            <button class="w-8 h-8 rounded text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors" title="Opciones"><i class="fas fa-ellipsis-h"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="bg-white border-b border-gray-100 hover:bg-blue-50/50 transition-colors">
+                                    <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">Pablo Gonzalez</td>
+                                    <td class="px-6 py-4 text-gray-500">12230505</td>
+                                    <td class="px-6 py-4 font-semibold text-gray-900">$627,125.00</td>
+                                    <td class="px-6 py-4 text-gray-500">archangelark@gmail.com</td>
+                                    <td class="px-6 py-4 text-gray-500">2026-08-14</td>
+                                    <td class="px-6 py-4 text-red-600 font-medium">28 días</td>
+                                    <td class="px-6 py-4">
+                                        <span class="bg-yellow-50 text-yellow-700 text-xs font-medium px-2.5 py-1 rounded-full border border-yellow-200 whitespace-nowrap">
+                                            <i class="fas fa-circle text-[8px] mr-1 text-yellow-500"></i> Mora Temprana
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right whitespace-nowrap">
+                                        <div class="flex justify-end gap-2">
+                                            <button class="w-8 h-8 rounded text-gray-400 hover:text-primary hover:bg-blue-50 transition-colors" title="Acción IA"><i class="fas fa-robot"></i></button>
+                                            <button class="w-8 h-8 rounded text-gray-400 hover:text-primary hover:bg-blue-50 transition-colors" title="Facturación"><i class="fas fa-file-invoice-dollar"></i></button>
+                                            <button class="w-8 h-8 rounded text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors" title="Opciones"><i class="fas fa-ellipsis-h"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Pagination (Mock) -->
+                    <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
+                        <span class="text-sm text-gray-500">Mostrando <span class="font-medium text-gray-700">1</span> a <span class="font-medium text-gray-700">2</span> de <span class="font-medium text-gray-700">2</span> resultados</span>
+                        <div class="flex gap-1">
+                            <button class="px-3 py-1 border border-gray-300 rounded-md bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50" disabled>Anterior</button>
+                            <button class="px-3 py-1 border border-gray-300 rounded-md bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50" disabled>Siguiente</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- FOOTER -->
+        <footer class="bg-white border-t border-borderLight p-4 shrink-0 z-10">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between text-xs text-gray-500 gap-2">
+                <div>
+                    <span class="font-medium text-gray-600">PR Cobranza</span> &copy; 2026. Todos los derechos reservados.
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="hover:text-primary transition-colors flex items-center gap-1"><i class="fas fa-headset"></i> Soporte</a>
+                    <a href="#" class="hover:text-primary transition-colors">Términos de servicio</a>
+                    <a href="#" class="hover:text-primary transition-colors">Políticas de privacidad</a>
+                    <span class="text-gray-300">|</span>
+                    <span class="text-gray-400">v1.2.0</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- MODAL NUEVO CASO -->
+    <div id="modal-nuevo-caso" class="fixed inset-0 z-50 hidden bg-gray-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden animate-fade-in-up border border-gray-100">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-gray-800 tracking-tight">Nuevo Caso (Deudor)</h3>
+                <button onclick="document.getElementById('modal-nuevo-caso').classList.add('hidden')" class="text-gray-400 hover:text-gray-700 transition-colors">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6">
+                <form class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Identificación (DNI/NIT)</label>
+                        <input type="text" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-primaryLight focus:border-primary block w-full p-2.5 outline-none transition-all shadow-sm">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre Completo / Razón Social</label>
+                        <input type="text" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-primaryLight focus:border-primary block w-full p-2.5 outline-none transition-all shadow-sm">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Deuda Original (Inicial)</label>
+                            <input type="number" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-primaryLight focus:border-primary block w-full p-2.5 outline-none transition-all shadow-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Fecha Venc.</label>
+                            <input type="date" class="bg-white border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-2 focus:ring-primaryLight focus:border-primary block w-full p-2.5 outline-none transition-all shadow-sm">
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                            <input type="tel" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-primaryLight focus:border-primary block w-full p-2.5 outline-none transition-all shadow-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Correo (Opcional)</label>
+                            <input type="email" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-primaryLight focus:border-primary block w-full p-2.5 outline-none transition-all shadow-sm">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 flex justify-end gap-4 items-center">
+                <button type="button" onclick="document.getElementById('modal-nuevo-caso').classList.add('hidden')" class="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+                    Cancelar
+                </button>
+                <button type="button" class="bg-primary hover:bg-blue-800 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-sm">
+                    Crear Caso
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
