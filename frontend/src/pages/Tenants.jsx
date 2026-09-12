@@ -164,7 +164,7 @@ const Tenants = () => {
                 <button 
                   type="submit"
                   disabled={saving}
-                  className="px-4 py-2 rounded-lg font-medium bg-light-blue hover:bg-blue-600 text-white shadow-md hover:shadow-lg transition-colors flex items-center gap-2 disabled:opacity-70"
+                  className="btn-primary"
                 >
                   {saving ? 'Guardando...' : 'Guardar Empresa'}
                 </button>

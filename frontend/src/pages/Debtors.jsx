@@ -118,14 +118,14 @@ const Debtors = () => {
           <button 
             onClick={() => setIsDebtorModalOpen(true)}
             disabled={!selectedTenantId}
-            className="flex items-center gap-2 px-4 py-2 bg-light-blue rounded-lg text-white hover:bg-blue-600 transition-colors font-medium shadow-sm"
+            className="btn-primary"
           >
             <Plus size={18} />
             Nuevo Caso
           </button>
           <button 
             onClick={() => setIsImportModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-light-text-secondary hover:bg-slate-50 transition-colors font-medium"
+            className="btn-secondary"
           >
             <UploadCloud size={18} />
             Importar
@@ -133,7 +133,7 @@ const Debtors = () => {
           <button 
             onClick={handleExport}
             disabled={exporting}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-light-text-secondary hover:bg-slate-50 transition-colors font-medium disabled:opacity-70"
+            className="btn-secondary"
           >
             <Download size={18} />
             {exporting ? 'Exportando...' : 'Exportar'}
@@ -143,13 +143,13 @@ const Debtors = () => {
 
       <div className="glass-card flex-1 flex flex-col min-h-0 p-0 overflow-hidden">
         {/* Table Toolbar */}
-        <div className="p-4 border-b border-slate-200/80 flex items-center justify-between gap-4">
-          <div className="relative flex-1 max-w-md">
+        <div className="p-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50/50">
+          <div className="relative w-full sm:w-80">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
             <input 
               type="text" 
               placeholder="Buscar por nombre o identificación..." 
-              className="w-full pl-10 pr-4 py-2 rounded-lg bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-light-blue/20 focus:border-light-blue transition-all"
+              className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-primaryLight focus:border-primary block w-full pl-9 p-2 outline-none transition-all"
             />
           </div>
           <div className="flex gap-2">
@@ -168,17 +168,17 @@ const Debtors = () => {
 
         {/* Table Content */}
         <div className="flex-1 overflow-auto">
-          <table className="w-full min-w-[800px] text-left border-collapse">
-            <thead className="bg-slate-50/80 sticky top-0 backdrop-blur-sm z-10">
+          <table className="w-full text-sm text-left text-gray-600 border-collapse min-w-[800px]">
+            <thead className="text-xs text-gray-500 uppercase bg-gray-100 border-b border-gray-200 sticky top-0 z-10">
               <tr>
-                <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Cliente</th>
-                <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Identificación</th>
-                <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Saldo Actual</th>
-                <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Correo</th>
-                <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Fecha Venc.</th>
-                <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Días Mora</th>
-                <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Estado</th>
-                <th className="py-3 px-4 md:px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200 text-right">Acciones</th>
+                <th className="px-6 py-3 font-semibold border-b border-gray-200">Cliente</th>
+                <th className="px-6 py-3 font-semibold border-b border-gray-200">Identificación</th>
+                <th className="px-6 py-3 font-semibold border-b border-gray-200">Saldo Actual</th>
+                <th className="px-6 py-3 font-semibold border-b border-gray-200">Correo</th>
+                <th className="px-6 py-3 font-semibold border-b border-gray-200">Fecha Venc.</th>
+                <th className="px-6 py-3 font-semibold border-b border-gray-200">Días Mora</th>
+                <th className="px-6 py-3 font-semibold border-b border-gray-200">Estado</th>
+                <th className="px-6 py-3 font-semibold border-b border-gray-200 text-right">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">

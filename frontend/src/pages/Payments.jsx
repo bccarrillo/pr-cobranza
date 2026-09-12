@@ -200,7 +200,7 @@ const Payments = () => {
 
         {/* Table Area */}
         <div className="flex-1 overflow-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-sm text-left text-gray-600 border-collapse">
             <thead className="bg-slate-50 sticky top-0 z-10 shadow-sm">
               <tr>
                 <th className="py-3 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Fecha</th>

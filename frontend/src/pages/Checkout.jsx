@@ -211,7 +211,7 @@ const Checkout = () => {
               <button
                 type="submit"
                 disabled={status === 'processing' || amount <= 0}
-                className="w-full bg-light-blue hover:bg-blue-600 text-white py-4 rounded-xl font-medium shadow-md shadow-blue-500/20 transition-all active:scale-[0.98] mt-6 flex items-center justify-center gap-2 disabled:opacity-70 disabled:pointer-events-none"
+                className="btn-primary"
               >
                 {status === 'processing' ? (
                   <>

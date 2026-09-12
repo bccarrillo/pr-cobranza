@@ -99,13 +99,13 @@ const Users = () => {
 
       <div className="glass-card flex-1 flex flex-col min-h-0 p-0 overflow-hidden">
         <div className="flex-1 overflow-auto">
-          <table className="w-full text-left border-collapse">
-            <thead className="bg-slate-50/80 sticky top-0 backdrop-blur-sm z-10">
+          <table className="w-full text-sm text-left text-gray-600 border-collapse">
+            <thead className="text-xs text-gray-500 uppercase bg-gray-100 border-b border-gray-200 sticky top-0 z-10">
               <tr>
-                <th className="py-3 px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Nombre</th>
-                <th className="py-3 px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Email</th>
-                <th className="py-3 px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200">Empresa</th>
-                <th className="py-3 px-6 text-xs font-semibold text-light-text-secondary uppercase tracking-wider border-b border-slate-200 text-right">Acciones</th>
+                <th className="px-6 py-3 font-semibold border-b border-gray-200">Nombre</th>
+                <th className="px-6 py-3 font-semibold border-b border-gray-200">Email</th>
+                <th className="px-6 py-3 font-semibold border-b border-gray-200">Empresa</th>
+                <th className="px-6 py-3 font-semibold border-b border-gray-200 text-right">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -116,7 +116,7 @@ const Users = () => {
               ) : users.map((user) => {
                 const userTenant = tenants.find(t => t.id === user.tenant_id);
                 return (
-                  <tr key={user.id} className="hover:bg-slate-50/50 transition-colors">
+                  <tr key={user.id} className="bg-white border-b border-gray-100 hover:bg-blue-50/50 transition-colors">
                     <td className="py-4 px-6 flex items-center gap-3">
                       <UserCircle size={24} className="text-slate-400" />
                       <span className="font-medium text-light-text-primary">{user.name}</span>
@@ -221,7 +221,7 @@ const Users = () => {
                 <button 
                   type="submit"
                   disabled={saving}
-                  className="px-4 py-2 rounded-lg font-medium bg-light-blue hover:bg-blue-600 text-white shadow-md hover:shadow-lg transition-colors flex items-center gap-2 disabled:opacity-70"
+                  className="btn-primary"
                 >
                   {saving ? 'Guardando...' : 'Guardar Usuario'}
                 </button>

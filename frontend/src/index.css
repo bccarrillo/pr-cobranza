@@ -28,11 +28,15 @@
 
 @layer components {
   .glass-card {
-    @apply bg-white/70 backdrop-blur-md border border-slate-200/80 shadow-sm rounded-xl p-6 transition-all duration-300 hover:shadow-md;
+    @apply bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden;
   }
   
   .btn-primary {
-    @apply bg-sky-100 hover:bg-sky-200 text-blue-600 font-medium px-4 py-2 rounded-lg transition-colors duration-200 cursor-pointer;
+    @apply bg-primary hover:bg-blue-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center justify-center cursor-pointer;
+  }
+  
+  .btn-secondary {
+    @apply bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center justify-center cursor-pointer;
   }
   
   .pill-preventive {
