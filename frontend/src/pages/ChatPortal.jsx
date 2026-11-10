@@ -27,23 +27,15 @@ const ChatPortal = () => {
 
     // 2. Inyectar el script del Widget Externo
     const script = document.createElement("script");
-    script.src = "https://sentient-canvas-pro.lovable.app/widget.js";
+    script.src = "https://ai.dinamicasolutions.com/widget.js";
     
-    // --- WIDGET ANTERIOR (Comentado) ---
-    // script.setAttribute("data-channel-id", "ad2bd7af-4ac2-48f2-9a05-e1ede78a7d16");
-    // script.setAttribute("data-public-key", "dwk_vLm_ryd9U9d_IZtcuGZmWcLeaXQMQ5e2");
-    // script.setAttribute("data-title", "Asistente Virtual PR");
-    // script.setAttribute("data-color", "#3b82f6"); 
-    // script.setAttribute("data-welcome", "¡Hola! Estoy aquí para ayudarte a revisar tus opciones de pago. ¿En qué te puedo ayudar?");
-    
-    // --- WIDGET NUEVO ---
-    script.setAttribute("data-channel-id", "944fa674-f6d8-48c3-a54a-5ce78f36ec7d");
-    script.setAttribute("data-public-key", "dwk_xotJhxZ8mOCLcIonHUhx3bnLKJo2st3f");
+    script.setAttribute("data-channel-id", "29dbc864-d54f-4bba-8f9f-56d749c55df5");
+    script.setAttribute("data-public-key", "dwk_t9P7yMQDVyqUGbojBG0agjpUGAcG3UJ2");
     script.setAttribute("data-title", "Chat with us");
-    script.setAttribute("data-color", "#7a362a");
+    script.setAttribute("data-color", "#2A2A7A");
     script.setAttribute("data-welcome", "Saludos, tenemos el mejor plan de ayuda para tu deuda!");
 
-    // Inyectamos el token como metadata (la IA puede pedirlo y el usuario copiarlo, o Lovable puede pasarlo)
+    // Inyectamos el token como metadata (la IA puede pedirlo y el usuario copiarlo, o Dinamica puede pasarlo)
     script.setAttribute("data-user-id", token);
     script.defer = true;
     
@@ -51,7 +43,7 @@ const ChatPortal = () => {
 
     return () => {
       // Limpieza al desmontar la vista
-      const existingScript = document.querySelector('script[src="https://sentient-canvas-pro.lovable.app/widget.js"]');
+      const existingScript = document.querySelector('script[src="https://ai.dinamicasolutions.com/widget.js"]');
       if (existingScript) existingScript.remove();
     };
   }, [token]);
