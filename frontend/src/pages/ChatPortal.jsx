@@ -29,11 +29,11 @@ const ChatPortal = () => {
     const script = document.createElement("script");
     script.src = "https://ai.dinamicasolutions.com/widget.js";
     
-    script.setAttribute("data-channel-id", "29dbc864-d54f-4bba-8f9f-56d749c55df5");
-    script.setAttribute("data-public-key", "dwk_t9P7yMQDVyqUGbojBG0agjpUGAcG3UJ2");
+    script.setAttribute("data-channel-id", "94df453c-2b8a-4fdd-98be-505d734ffeae");
+    script.setAttribute("data-public-key", "dwk_xcaMW38emTZwCP1X6Z_2CBYpyX0krueT");
     script.setAttribute("data-title", "Chat with us");
     script.setAttribute("data-color", "#2A2A7A");
-    script.setAttribute("data-welcome", "Saludos, tenemos el mejor plan de ayuda para tu deuda!");
+    script.setAttribute("data-welcome", "Hola, como podemos ayudarte ?");
 
     // Inyectamos el token como metadata (la IA puede pedirlo y el usuario copiarlo, o Dinamica puede pasarlo)
     script.setAttribute("data-user-id", token);
